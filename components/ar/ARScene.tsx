@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { XRButton, XR, Controllers, Hands } from '@react-three/xr';
+import { XRButton, XR, XRControllerModel, XRHandModel } from '@react-three/xr';
 import { PerspectiveCamera, OrbitControls, Environment, Sky, Stars } from "@react-three/drei";
 import { useState, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
@@ -124,8 +124,8 @@ export default function ARScene(props: ARSceneProps) {
       >
         <XR>
           <SceneContent {...props} />
-          <Controllers />
-          <Hands />
+          <XRControllerModel />
+          <XRHandModel />
         </XR>
       </Canvas>
     </div>
