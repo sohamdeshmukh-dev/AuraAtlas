@@ -2,6 +2,7 @@
 
 import { FormEvent, useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Activity, FileText, CalendarDays } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import Button from "@/components/Button";
 import EmotionIntensitySlider from "@/components/EmotionIntensitySlider";
@@ -62,6 +63,7 @@ export default function JournalPage() {
   const [communityPulse, setCommunityPulse] = useState<{ dominant_mood: string } | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [savedMood, setSavedMood] = useState<Mood | null>(null);
+  const [savedIntensity, setSavedIntensity] = useState(DEFAULT_INTENSITY);
 
   useEffect(() => {
     supabase.from('community_mood_pulse').select('*').limit(1).maybeSingle().then(({ data, error }) => {
@@ -165,6 +167,7 @@ export default function JournalPage() {
 
     markDailyCheckInCompleted();
     setSavedMood(selectedEmotion);
+    setSavedIntensity(intensity);
     setShowModal(true);
 
     setFeelingNow("");
@@ -182,47 +185,45 @@ export default function JournalPage() {
   return (
     <div className="min-h-screen bg-[var(--background)] page-enter">
       <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-24 sm:px-6">
-        <section className="py-10 text-center">
-          <h1 className="text-3xl font-semibold tracking-tight text-[var(--foreground)] sm:text-4xl">
+        <section className="py-8 text-center">
+          <h1 className="text-2xl font-semibold tracking-tight text-[var(--foreground)] sm:text-3xl">
             Mood Journal
           </h1>
-          <p className="mt-3 text-sm text-[var(--muted-text)]">Track how you feel over time.</p>
+          <p className="mt-2 text-sm text-[var(--muted-text)]">Record and review your emotional patterns over time.</p>
         </section>
 
-        <section className="py-10">
+        <section className="py-6">
           <div className="grid gap-6 xl:grid-cols-[1.12fr_0.88fr]">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
-                <h2 className="text-lg font-semibold text-[var(--foreground)]">Daily Emotional Check-In</h2>
-                <p className="mt-1 text-xs text-[var(--muted-text)]">Please complete all 5 questions before submitting.</p>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+                <h2 className="text-base font-semibold text-[var(--foreground)]">Daily Entry</h2>
+                <p className="mt-1 text-xs text-[var(--muted-text)]">Complete all 5 fields to submit your mood log.</p>
               </div>
 
-              <div className="space-y-3 rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
-                <div>
-                  <h3 className="text-sm font-semibold text-[var(--foreground)]">1. How are you feeling right now?</h3>
-                </div>
+              <div className="space-y-2 rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+                <label className="text-sm font-medium text-[var(--foreground)]">1. Current state</label>
                 <input
                   value={feelingNow}
                   onChange={(event) => setFeelingNow(event.target.value)}
-                  placeholder="A quick sentence about your current state."
+                  placeholder="Briefly describe how you feel right now."
                   maxLength={160}
-                  className="w-full rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-2)] p-4 text-sm text-[var(--foreground)] placeholder:text-[var(--subtle-text)] outline-none transition-all focus:border-teal-400/60 focus:ring-2 focus:ring-teal-400/20"
+                  className="w-full rounded-md border border-[var(--border-soft)] bg-[var(--surface-2)] px-3 py-2.5 text-sm text-[var(--foreground)] placeholder:text-[var(--subtle-text)] outline-none transition-colors focus:border-slate-400"
                   required
                 />
-                <p className="text-right text-[11px] text-[var(--subtle-text)]">{feelingNow.length}/160</p>
+                <p className="text-right text-[11px] text-[var(--subtle-text)] tabular-nums">{feelingNow.length}/160</p>
               </div>
 
-              <div className="rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
-                <h3 className="text-sm font-semibold text-[var(--foreground)]">2. What emotion best describes your current state?</h3>
-                <p className="mt-1 text-xs text-[var(--muted-text)]">Select your mood from the wheel.</p>
-                <div className="mt-5">
+              <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+                <label className="text-sm font-medium text-[var(--foreground)]">2. Primary emotion</label>
+                <p className="mt-0.5 text-xs text-[var(--muted-text)]">Select from the wheel below.</p>
+                <div className="mt-4">
                   <MoodWheel value={selectedEmotion} onChange={setSelectedEmotion} />
                 </div>
               </div>
 
               {selectedEmotion ? (
-                <div className="space-y-3 rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
-                  <h3 className="text-sm font-semibold text-[var(--foreground)]">4. How intense is this feeling? (1-100)</h3>
+                <div className="space-y-2 rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+                  <label className="text-sm font-medium text-[var(--foreground)]">4. Intensity level (1-100)</label>
                   <EmotionIntensitySlider
                     emotion={selectedEmotion}
                     value={intensity}
@@ -230,56 +231,49 @@ export default function JournalPage() {
                   />
                 </div>
               ) : (
-                <div className="rounded-3xl border border-dashed border-[var(--border-soft)] bg-[var(--surface-2)] p-6 text-sm text-[var(--muted-text)]">
-                  Question 4 unlocks after you select an emotion for question 2.
+                <div className="rounded-lg border border-dashed border-[var(--border-soft)] bg-[var(--surface-2)] p-5 text-sm text-[var(--muted-text)]">
+                  Intensity selection requires an emotion in field 2.
                 </div>
               )}
 
-              <div className="space-y-3 rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
-                <div>
-                  <h3 className="text-sm font-semibold text-[var(--foreground)]">3. What influenced your mood today?</h3>
-                </div>
+              <div className="space-y-2 rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+                <label className="text-sm font-medium text-[var(--foreground)]">3. Contributing factors</label>
                 <textarea
                   value={moodInfluence}
                   onChange={(event) => setMoodInfluence(event.target.value)}
-                  placeholder="Describe events, thoughts, or interactions that influenced how you feel."
-                  rows={4}
+                  placeholder="Events, thoughts, or interactions that influenced your mood."
+                  rows={3}
                   maxLength={320}
                   required
-                  className="w-full resize-none rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-2)] p-4 text-sm text-[var(--foreground)] placeholder:text-[var(--subtle-text)] outline-none transition-all focus:border-teal-400/60 focus:ring-2 focus:ring-teal-400/20"
+                  className="w-full resize-none rounded-md border border-[var(--border-soft)] bg-[var(--surface-2)] px-3 py-2.5 text-sm text-[var(--foreground)] placeholder:text-[var(--subtle-text)] outline-none transition-colors focus:border-slate-400"
                 />
-                <p className="text-right text-[11px] text-[var(--subtle-text)]">{moodInfluence.length}/320</p>
+                <p className="text-right text-[11px] text-[var(--subtle-text)] tabular-nums">{moodInfluence.length}/320</p>
               </div>
 
-              <div className="space-y-3 rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
-                <div>
-                  <h3 className="text-sm font-semibold text-[var(--foreground)]">5. What is one thing you need right now?</h3>
-                </div>
+              <div className="space-y-2 rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+                <label className="text-sm font-medium text-[var(--foreground)]">5. Immediate need</label>
                 <input
                   value={needRightNow}
                   onChange={(event) => setNeedRightNow(event.target.value)}
                   placeholder="Rest, support, clarity, connection, movement, etc."
                   maxLength={180}
                   required
-                  className="w-full rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-2)] p-4 text-sm text-[var(--foreground)] placeholder:text-[var(--subtle-text)] outline-none transition-all focus:border-teal-400/60 focus:ring-2 focus:ring-teal-400/20"
+                  className="w-full rounded-md border border-[var(--border-soft)] bg-[var(--surface-2)] px-3 py-2.5 text-sm text-[var(--foreground)] placeholder:text-[var(--subtle-text)] outline-none transition-colors focus:border-slate-400"
                 />
-                <p className="text-right text-[11px] text-[var(--subtle-text)]">{needRightNow.length}/180</p>
+                <p className="text-right text-[11px] text-[var(--subtle-text)] tabular-nums">{needRightNow.length}/180</p>
               </div>
 
-              <div className="space-y-3 rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
-                <div>
-                  <h3 className="text-sm font-semibold text-[var(--foreground)]">Additional Journal Note (optional)</h3>
-                  <p className="mt-1 text-xs text-[var(--subtle-text)]">Add extra context if you want.</p>
-                </div>
+              <div className="space-y-2 rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+                <label className="text-sm font-medium text-[var(--foreground)]">Additional notes <span className="font-normal text-[var(--muted-text)]">(optional)</span></label>
                 <textarea
                   value={note}
                   onChange={(event) => setNote(event.target.value)}
-                  placeholder="Write about your day, what happened, or what helped."
-                  rows={4}
+                  placeholder="Any additional context or reflections."
+                  rows={3}
                   maxLength={500}
-                  className="w-full resize-none rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-2)] p-4 text-sm text-[var(--foreground)] placeholder:text-[var(--subtle-text)] outline-none transition-all focus:border-teal-400/60 focus:ring-2 focus:ring-teal-400/20"
+                  className="w-full resize-none rounded-md border border-[var(--border-soft)] bg-[var(--surface-2)] px-3 py-2.5 text-sm text-[var(--foreground)] placeholder:text-[var(--subtle-text)] outline-none transition-colors focus:border-slate-400"
                 />
-                <p className="text-right text-[11px] text-[var(--subtle-text)]">{note.length}/500</p>
+                <p className="text-right text-[11px] text-[var(--subtle-text)] tabular-nums">{note.length}/500</p>
               </div>
 
               <ImageUploader
@@ -302,13 +296,13 @@ export default function JournalPage() {
               />
 
               {(selectedEmotion === "Overwhelmed" || selectedEmotion === "Sad") && (
-                <div className="rounded-2xl border border-red-500/30 bg-red-500/[0.08] p-4 text-center shadow-[0_0_20px_rgba(239,68,68,0.14)]">
-                  <p className="text-sm font-semibold text-red-300">You are not alone. Help is available.</p>
+                <div className="rounded-lg border border-red-500/25 bg-red-500/[0.06] p-4 text-center">
+                  <p className="text-sm font-medium text-red-300">Support is available if you need it.</p>
                   <a
                     href="tel:988"
-                    className="mt-3 inline-flex rounded-xl border border-red-500/35 bg-red-500/15 px-4 py-2 text-xs font-semibold text-red-200 transition-colors hover:bg-red-500/30"
+                    className="mt-2 inline-flex rounded-md border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-200 transition-colors hover:bg-red-500/20"
                   >
-                    Call or Text 988 Crisis Lifeline
+                    988 Crisis Lifeline
                   </a>
                 </div>
               )}
@@ -320,59 +314,64 @@ export default function JournalPage() {
                   disabled={!isDailyCheckInComplete || isBusy}
                   className="w-full"
                 >
-                  Submit Daily Check-In
+                  Submit Entry
                 </Button>
-                {isUploading ? <p className="text-xs text-teal-500">Uploading image...</p> : null}
-                {isSaving ? <p className="text-xs text-slate-400">Saving entry...</p> : null}
-                {saveSuccess ? <p className="text-xs font-medium text-emerald-400">Entry saved</p> : null}
+                {isUploading ? <p className="text-xs text-slate-400">Uploading image...</p> : null}
+                {isSaving ? <p className="text-xs text-slate-400">Saving...</p> : null}
+                {saveSuccess ? <p className="text-xs font-medium text-emerald-400">Entry recorded.</p> : null}
                 {saveError ? <p className="text-xs text-red-400">{saveError}</p> : null}
                 {!isDailyCheckInComplete && !isBusy ? (
-                  <p className="text-xs text-slate-400">Complete all 5 check-in questions to submit.</p>
+                  <p className="text-xs text-slate-400">All required fields must be completed.</p>
                 ) : null}
               </div>
             </form>
 
-            <aside className="space-y-6">
-              <div className="rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
-                <h2 className="text-lg font-semibold text-[var(--foreground)]">Your Stats</h2>
-                <p className="mt-1 text-xs text-[var(--subtle-text)]">A quick view of your journaling consistency.</p>
-                <div className="mt-5 grid gap-4">
+            <aside className="space-y-4">
+              <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+                <h2 className="text-sm font-semibold text-[var(--foreground)]">Summary</h2>
+                <p className="mt-0.5 text-[11px] text-[var(--subtle-text)]">Logging consistency at a glance.</p>
+                <div className="mt-4 grid gap-3">
                   <StatsCard
-                    label="Day Streak"
-                    value={streak}
-                    icon="🔥"
-                    accentClassName="text-teal-300"
-                    helperText="Consecutive days with entries"
+                    label="Consistency"
+                    value={`${streak}d`}
+                    icon={<Activity className="h-3.5 w-3.5" />}
+                    helperText="Consecutive days logged"
                   />
                   <StatsCard
                     label="Total Entries"
                     value={totalEntries}
-                    icon="📝"
-                    accentClassName="text-indigo-300"
-                    helperText="All mood journal entries"
+                    icon={<FileText className="h-3.5 w-3.5" />}
+                    helperText="All recorded entries"
                   />
                   <StatsCard
-                    label="This Week"
+                    label="Last 7 Days"
                     value={thisWeekCount}
-                    icon="📅"
-                    accentClassName="text-amber-300"
-                    helperText="Entries from the last 7 days"
+                    icon={<CalendarDays className="h-3.5 w-3.5" />}
+                    helperText="Entries this week"
                   />
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6">
-                <p className="text-xs uppercase tracking-[0.14em] text-[var(--muted-text)]">Selected Emotion</p>
-                <div className="mt-3 flex items-center gap-3">
-                  <span className="text-2xl">{selectedMood?.icon ?? "🫶"}</span>
+              <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+                <p className="text-[11px] uppercase tracking-wider text-[var(--muted-text)] font-medium">Active Selection</p>
+                <div className="mt-2.5 flex items-center gap-3">
+                  {selectedMood ? (
+                    <div className="flex h-8 w-8 items-center justify-center rounded-md" style={{ backgroundColor: `${selectedMood.color}20` }}>
+                      <div className="h-3 w-3 rounded-full" style={{ backgroundColor: selectedMood.color }} />
+                    </div>
+                  ) : (
+                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[var(--surface-2)]">
+                      <div className="h-3 w-3 rounded-full bg-slate-600" />
+                    </div>
+                  )}
                   <div>
-                    <p className="text-base font-semibold text-[var(--foreground)]">
-                      {selectedEmotion ?? "No emotion selected"}
+                    <p className="text-sm font-medium text-[var(--foreground)]">
+                      {selectedEmotion ?? "None"}
                     </p>
-                    <p className="text-xs text-[var(--muted-text)]">
+                    <p className="text-[11px] text-[var(--muted-text)]">
                       {selectedEmotion
-                        ? `Intensity: ${intensity}`
-                        : "Pick a mood to unlock intensity and save."}
+                        ? `Intensity: ${intensity}/100`
+                        : "Select an emotion to continue."}
                     </p>
                   </div>
                 </div>
@@ -385,60 +384,58 @@ export default function JournalPage() {
           <MoodBalanceGraph entries={entries} />
         </section>
 
-        <section className="pb-10">
-          <div className="grid md:grid-cols-2 gap-6 rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
-            <div className="flex flex-col justify-center space-y-2">
-              <h3 className="text-xs uppercase tracking-[0.14em] text-[var(--muted-text)] font-medium">Individual Forecast</h3>
+        <section className="pb-8">
+          <div className="grid md:grid-cols-2 gap-0 rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] overflow-hidden">
+            <div className="p-5 space-y-1.5">
+              <h3 className="text-[11px] uppercase tracking-wider text-[var(--muted-text)] font-medium">Personal Trend</h3>
               {(() => {
                 const isHighIntensityStreak = entries.length >= 2 && entries[0].intensity > 70 && entries[1].intensity > 70;
                 const isRecoveryForecast = entries.length >= 1 && entries[0].emotion === 'Calm';
 
                 if (isHighIntensityStreak) {
-                  return <p className="text-base text-[var(--foreground)]">High intensity streak — you are in a high-output phase. Watch for burnout.</p>;
+                  return <p className="text-sm text-[var(--foreground)]">Elevated intensity detected across recent entries. Consider monitoring for sustained stress.</p>;
                 } else if (isRecoveryForecast) {
-                  return <p className="text-base text-[var(--foreground)]">Recovery forecast — your energy is stabilizing. Great time for reflection.</p>;
+                  return <p className="text-sm text-[var(--foreground)]">Recent entries indicate stabilization. Current state favors reflective activities.</p>;
                 } else {
-                  return <p className="text-base text-[var(--foreground)]">Balance forecast — your mood is steadily processing. Keep tracking to learn more.</p>;
+                  return <p className="text-sm text-[var(--foreground)]">Emotional balance within normal range. Continue logging to build a more complete picture.</p>;
                 }
               })()}
             </div>
-            <div className="flex flex-col justify-center space-y-2 border-t border-[var(--border-soft)] pt-4 md:border-t-0 md:border-l md:pt-0 md:pl-6">
-              <h3 className="text-xs uppercase tracking-[0.14em] text-[var(--muted-text)] font-medium">Community Pulse</h3>
+            <div className="p-5 space-y-1.5 border-t border-[var(--border-soft)] md:border-t-0 md:border-l">
+              <h3 className="text-[11px] uppercase tracking-wider text-[var(--muted-text)] font-medium">User Trends</h3>
               {communityPulse ? (() => {
-                const pulseMood = MOODS.find(m => m.label === communityPulse.dominant_mood);
-                const emoji = pulseMood?.icon || '😐';
                 return (
-                  <p className="text-base text-[var(--foreground)] leading-relaxed">
-                    Most users are feeling {emoji}. You are part of a wave of <strong>{communityPulse.dominant_mood}</strong>.
+                  <p className="text-sm text-[var(--foreground)] leading-relaxed">
+                    Dominant reported mood across users: <strong>{communityPulse.dominant_mood}</strong>.
                   </p>
                 );
               })() : (
-                <p className="text-sm text-[var(--muted-text)]">Gathering global pulse...</p>
+                <p className="text-sm text-[var(--muted-text)]">Aggregating user data...</p>
               )}
             </div>
           </div>
         </section>
 
-        <section className="py-10">
+        <section className="py-8">
           <div className="mb-4">
-            <h2 className="text-2xl font-semibold text-[var(--foreground)]">Journal Timeline</h2>
-            <p className="mt-1 text-sm text-[var(--subtle-text)]">Review patterns across your recent mood logs.</p>
+            <h2 className="text-lg font-semibold text-[var(--foreground)]">Entry Log</h2>
+            <p className="mt-0.5 text-sm text-[var(--subtle-text)]">Chronological record of mood entries.</p>
           </div>
 
           {isLoading ? (
-            <div className="rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-10 text-center">
-              <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-teal-400/30 border-t-teal-300" />
-              <p className="mt-3 text-sm text-[var(--muted-text)]">Loading journal timeline...</p>
+            <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-10 text-center">
+              <div className="mx-auto h-6 w-6 animate-spin rounded-full border-2 border-slate-400/30 border-t-slate-400" />
+              <p className="mt-3 text-sm text-[var(--muted-text)]">Loading entries...</p>
             </div>
           ) : entries.length === 0 ? (
-            <div className="rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-10 text-center">
-              <p className="text-lg font-medium text-[var(--foreground)]">No journal entries yet.</p>
-              <p className="mt-2 text-sm text-[var(--subtle-text)]">
-                Start tracking your mood to build your emotional timeline.
+            <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-10 text-center">
+              <p className="text-sm font-medium text-[var(--foreground)]">No entries recorded.</p>
+              <p className="mt-1 text-sm text-[var(--subtle-text)]">
+                Submit your first mood log to begin tracking.
               </p>
             </div>
           ) : (
-            <div className="grid gap-6">
+            <div className="grid gap-3">
               {entries.map((entry) => (
                 <JournalEntryCard
                   key={entry.id}
@@ -458,45 +455,34 @@ export default function JournalPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/90 overflow-hidden"
+            className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/80"
+            onClick={() => setShowModal(false)}
           >
-            <motion.img
-              src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1600&q=80"
-              alt="Nature Background"
-              className="absolute inset-0 w-full h-full object-cover opacity-40 blur-sm mix-blend-overlay pointer-events-none"
-              initial={{ scale: 1 }}
-              animate={{ scale: 1.1 }}
-              transition={{ duration: 20, ease: "linear" }}
-            />
-
-            <div className="relative z-10 w-full max-w-2xl bg-black/40 backdrop-blur-md border border-white/15 p-10 rounded-3xl text-center">
-              {(() => {
-                let quote = "Every feeling has its own quiet dignity.";
-                if (savedMood === "Happy") quote = "Radiate your light; the world is catching your glow.";
-                else if (savedMood === "Calm") quote = "Stillness is not the absence of movement, but the presence of peace.";
-                else if (savedMood === "Sad") quote = "Tears are the ink with which we write our truest stories.";
-                else if (savedMood === "Overwhelmed") quote = "Take a breath. You don't have to carry it all today.";
-                else if (savedMood === "Stressed") quote = "Softness is a strength when the world demands you be hard.";
-
-                return (
-                  <motion.h2
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-3xl sm:text-4xl font-serif italic text-white leading-relaxed mb-10"
-                  >
-                    &ldquo;{quote}&rdquo;
-                  </motion.h2>
-                );
-              })()}
+            <div className="w-full max-w-md bg-[var(--surface-1)] border border-[var(--border-soft)] p-8 rounded-lg text-center" onClick={(e) => e.stopPropagation()}>
+              <div className="mb-4">
+                <div className="mx-auto h-10 w-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${MOODS.find(m => m.label === savedMood)?.color ?? '#14b8a6'}20` }}>
+                  <div className="h-4 w-4 rounded-full" style={{ backgroundColor: MOODS.find(m => m.label === savedMood)?.color ?? '#14b8a6' }} />
+                </div>
+              </div>
 
               <motion.div
-                initial={{ y: 20, opacity: 0 }}
+                initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.6 }}
+                transition={{ delay: 0.2 }}
               >
-                <Button onClick={() => setShowModal(false)} className="px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/30 text-white rounded-full transition-all">
-                  Continue to Dashboard
+                <p className="text-lg font-semibold text-[var(--foreground)] mb-1">Entry Recorded</p>
+                <p className="text-sm text-[var(--muted-text)] mb-6">
+                  {savedMood} logged at intensity {savedIntensity}. Your data has been saved.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                <Button onClick={() => setShowModal(false)} className="px-6">
+                  Continue
                 </Button>
               </motion.div>
             </div>
