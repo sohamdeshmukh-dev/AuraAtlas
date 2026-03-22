@@ -496,13 +496,12 @@ export default function ProfilePage() {
     return (
         <div className="min-h-screen bg-[var(--background)] page-enter pb-20">
             <div className="mx-auto max-w-4xl px-4 pt-12">
-                <header className="mb-10 text-center relative py-12 px-6 rounded-3xl overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-purple-500/5 to-transparent animate-gradient-slow" />
-                    <div className="relative z-10">
-                        <h1 className="text-4xl font-bold tracking-tight text-[var(--foreground)] mb-3">
+                <header className="mb-8 py-8 px-6">
+                    <div>
+                        <h1 className="text-2xl font-semibold tracking-tight text-[var(--foreground)] mb-2">
                             Profile & Settings
                         </h1>
-                        <p className="text-lg text-[var(--foreground-muted)] max-w-xl mx-auto">
+                        <p className="text-sm text-[var(--muted-text)]">
                             Manage your workspace, emergency contacts, and campus integration.
                         </p>
                     </div>
@@ -530,15 +529,13 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <div className="mb-10 app-surface p-8 rounded-3xl border border-[var(--border-soft)] relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/5 rounded-full blur-3xl -mr-32 -mt-32 transition-colors duration-500 group-hover:bg-teal-500/10" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl -ml-32 -mb-32 transition-colors duration-500 group-hover:bg-indigo-500/10" />
+                <div className="mb-8 rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-8 relative">
 
-                    <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                    <div className="flex flex-col md:flex-row items-center gap-8">
                         <div className="relative">
                             <div
                                 onClick={() => setShowAvatars(!showAvatars)}
-                                className="h-24 w-24 rounded-full bg-[var(--background)] p-1 ring-4 ring-teal-500/20 overflow-hidden cursor-pointer hover:ring-teal-500/50 transition-all shadow-xl"
+                                className="h-20 w-20 rounded-full bg-[var(--background)] border-2 border-[var(--border-strong)] overflow-hidden cursor-pointer hover:border-teal-600 transition-colors"
                             >
                                 {profile?.avatar_url ? (
                                     <img src={profile.avatar_url} alt="Profile avatar" className="w-full h-full object-cover rounded-full" />
@@ -551,7 +548,7 @@ export default function ProfilePage() {
                             <button
                                 onClick={() => setShowAvatars(!showAvatars)}
                                 aria-label="Choose profile avatar"
-                                className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-teal-500 flex items-center justify-center text-sm shadow-lg hover:scale-110 transition-transform border-4 border-[var(--surface-1)]"
+                                className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-teal-600 flex items-center justify-center text-sm border-2 border-[var(--surface-1)] hover:bg-teal-700 transition-colors"
                             >
                                 <Pencil className="h-4 w-4" />
                             </button>
