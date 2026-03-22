@@ -62,11 +62,13 @@ export default function Home() {
   // Navigation & AR state
   const [isARModeActive, setIsARModeActive] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [selectedCampusName, setSelectedCampusName] = useState<string>(() =>
-    typeof window !== 'undefined'
-      ? localStorage.getItem('aura_campus') || "Temple University"
-      : "Temple University"
-  );
+  const [selectedCampusName, setSelectedCampusName] = useState<string>("Temple University");
+
+  // Defer localStorage read to avoid SSR/client hydration mismatch
+  useEffect(() => {
+    const saved = localStorage.getItem('aura_campus');
+    if (saved) setSelectedCampusName(saved);
+  }, []);
   
   const userCampus = ALL_COLLEGES.find(college => college.name === selectedCampusName);
   const [isDroppingMode, setIsDroppingMode] = useState(false);
