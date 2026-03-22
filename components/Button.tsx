@@ -10,15 +10,15 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const BASE_CLASSES =
-  "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/50 disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.99]";
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary:
-    "bg-teal-600 text-white hover:bg-teal-700",
+    "bg-gradient-to-r from-teal-500 to-indigo-500 text-white shadow-[0_8px_30px_rgba(20,184,166,0.28)] hover:brightness-110 hover:shadow-[0_12px_34px_rgba(99,102,241,0.32)]",
   secondary:
-    "border border-[var(--border-strong)] bg-[var(--surface-2)] text-[var(--foreground)] hover:bg-[var(--surface-3)]",
+    "border border-[var(--border-soft)] bg-[var(--surface-2)] text-[var(--foreground)] hover:border-[var(--border-strong)]",
   ghost:
-    "border border-transparent bg-transparent text-[var(--muted-text)] hover:bg-[var(--surface-2)] hover:text-[var(--foreground)]",
+    "border border-transparent bg-transparent text-[var(--muted-text)] hover:border-[var(--border-soft)] hover:bg-[var(--surface-2)] hover:text-[var(--foreground)]",
 };
 
 function joinClasses(...classes: Array<string | undefined>) {

@@ -352,8 +352,10 @@ export default function FriendsPage() {
             <div className="mx-auto max-w-3xl px-4 pb-8 pt-24 sm:px-6">
                 {/* Header */}
                 <div className="mb-8 text-center">
-                    <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-                        Friends & Leaderboard
+                    <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                        <span className="bg-gradient-to-r from-teal-400 to-purple-400 bg-clip-text text-transparent">
+                            Friends & Leaderboard
+                        </span>
                     </h1>
                     <p className="mt-2 text-sm text-slate-400">
                         Connect, support each other, and stay motivated together
@@ -370,12 +372,12 @@ export default function FriendsPage() {
                         value={searchCode}
                         onChange={(e) => setSearchCode(e.target.value)}
                         placeholder="Enter username or anonymous code..."
-                        className="flex-1 rounded-lg border border-[var(--border-soft)] bg-[var(--surface-2)] px-4 py-2.5 text-sm text-white placeholder-[var(--subtle-text)] focus:border-teal-600 focus:outline-none transition-colors"
+                        className="flex-1 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-teal-500/40 focus:outline-none focus:ring-1 focus:ring-teal-500/30 transition-colors"
                     />
                     <button
                         type="submit"
                         disabled={isAdding || !searchCode.trim()}
-                        className="rounded-lg bg-teal-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-teal-700 transition-colors disabled:opacity-40"
+                        className="rounded-2xl bg-gradient-to-r from-teal-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-500/15 hover:shadow-teal-500/25 transition-all disabled:opacity-40 active:scale-[0.97]"
                     >
                         {isAdding ? "Sending..." : "Add Friend"}
                     </button>
@@ -392,16 +394,15 @@ export default function FriendsPage() {
                 )}
 
                 {/* Tab bar */}
-                <div className="mb-6 flex rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-1">
+                <div className="mb-6 flex rounded-2xl border border-white/[0.06] bg-white/[0.02] p-1.5">
                     {(["friends", "leaderboard"] as Tab[]).map((tab) => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                                activeTab === tab
-                                    ? "bg-[var(--surface-3)] text-white"
-                                    : "text-[var(--muted-text)] hover:text-white"
-                            }`}
+                            className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${activeTab === tab
+                                ? "bg-gradient-to-r from-teal-500/20 to-indigo-500/20 text-white border border-teal-500/20"
+                                : "text-slate-400 hover:text-white"
+                                }`}
                         >
                             {tab === "friends" ? "👥 Friends" : "🏆 Leaderboard"}
                         </button>
@@ -731,10 +732,10 @@ export default function FriendsPage() {
                                                 <div className="flex items-center gap-4">
                                                     {/* The Gamified Smile Points (Calculated from entries for instant update) */}
                                                     <div className="text-right">
-                                                        <div className="text-2xl font-bold text-[var(--foreground)]">
+                                                        <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-rose-400 drop-shadow-md animate-fade-in">
                                                             {calculatedPoints}
                                                         </div>
-                                                        <div className="text-[10px] text-[var(--muted-text)] font-medium uppercase tracking-wider mt-0.5">
+                                                        <div className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest mt-1">
                                                             Smile Points
                                                         </div>
                                                     </div>

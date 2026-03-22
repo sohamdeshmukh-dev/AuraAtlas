@@ -348,19 +348,19 @@ export default function Home() {
         {!isNewUser && (
           <Link 
             href="/report"
-            className="absolute bottom-32 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-[var(--surface-1)] border border-[var(--border-soft)] px-5 py-2 rounded-lg z-40 hover:bg-[var(--surface-2)] transition-colors pointer-events-auto"
+            className="absolute bottom-32 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/60 border border-[#ffb088]/30 backdrop-blur-xl px-6 py-2.5 rounded-full shadow-[0_0_20px_rgba(255,176,136,0.15)] z-40 animate-in slide-in-from-bottom-4 duration-700 hover:scale-105 hover:bg-black/80 hover:border-[#ffb088]/60 transition-all group pointer-events-auto"
           >
             <div className="flex items-center gap-2">
-              <span className="text-lg">✨</span>
+              <span className="text-2xl animate-pulse group-hover:scale-110 transition-transform">✨</span>
               <div className="flex flex-col">
-                <span className="text-[10px] text-teal-500 uppercase tracking-wider font-medium leading-none">Smile Score</span>
-                <span className="text-white font-mono font-semibold text-base leading-tight">{smileScore.toLocaleString()}</span>
+                <span className="text-[10px] text-[#ffb088] uppercase tracking-widest font-bold leading-none">Smile Score</span>
+                <span className="text-white font-mono font-bold text-lg leading-tight">{smileScore.toLocaleString()}</span>
               </div>
             </div>
-            <div className="w-px h-6 bg-[var(--border-soft)]" /> 
+            <div className="w-px h-8 bg-white/10" /> 
             <div className="flex items-center gap-1.5">
-              <span className="text-orange-400 text-base">🔥</span>
-              <span className="text-white font-medium text-sm">{streak} Day{streak !== 1 && 's'}</span>
+              <span className="text-orange-400 text-lg drop-shadow-[0_0_8px_rgba(251,146,60,0.8)]">🔥</span>
+              <span className="text-white font-bold text-sm">{streak} Day{streak !== 1 && 's'}</span>
             </div>
           </Link>
         )}
@@ -369,12 +369,13 @@ export default function Home() {
         {needsCheckIn && (
           <button 
             onClick={() => setIsModalOpen(true)} 
-            className="absolute top-6 right-28 bg-[var(--surface-1)] border border-[var(--border-soft)] p-3 rounded-lg hover:bg-[var(--surface-2)] transition-colors z-[60] pointer-events-auto"
+            className="absolute top-6 right-28 bg-neutral-900 border border-[#ffb088]/50 p-3.5 rounded-full shadow-[0_0_15px_rgba(255,176,136,0.2)] hover:bg-neutral-800 transition-all hover:scale-105 z-[60] pointer-events-auto"
           >
-            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-red-500 text-[9px] text-white font-bold items-center justify-center">!</span>
+            <span className="absolute -top-1 -right-1 flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-rose-500 text-[10px] text-white font-bold items-center justify-center">!</span>
             </span>
-            <span className="text-[var(--muted-text)] text-lg leading-none">♡</span>
+            <span className="text-[#ffb088] text-xl leading-none">♡</span>
           </button>
         )}
 

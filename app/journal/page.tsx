@@ -182,22 +182,24 @@ export default function JournalPage() {
   return (
     <div className="min-h-screen bg-[var(--background)] page-enter">
       <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-24 sm:px-6">
-        <section className="py-8">
-          <h1 className="text-2xl font-semibold tracking-tight text-[var(--foreground)] sm:text-3xl">
-            Mood Journal
+        <section className="py-10 text-center">
+          <h1 className="text-3xl font-semibold tracking-tight text-[var(--foreground)] sm:text-4xl">
+            <span className="bg-gradient-to-r from-teal-300 to-indigo-300 bg-clip-text text-transparent">
+              Mood Journal
+            </span>
           </h1>
-          <p className="mt-2 text-sm text-[var(--muted-text)]">Track how you feel over time.</p>
+          <p className="mt-3 text-sm text-[var(--muted-text)]">Track how you feel over time.</p>
         </section>
 
         <section className="py-10">
           <div className="grid gap-6 xl:grid-cols-[1.12fr_0.88fr]">
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+              <div className="rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
                 <h2 className="text-lg font-semibold text-[var(--foreground)]">Daily Emotional Check-In</h2>
                 <p className="mt-1 text-xs text-[var(--muted-text)]">Please complete all 5 questions before submitting.</p>
               </div>
 
-              <div className="space-y-3 rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+              <div className="space-y-3 rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
                 <div>
                   <h3 className="text-sm font-semibold text-[var(--foreground)]">1. How are you feeling right now?</h3>
                 </div>
@@ -206,13 +208,13 @@ export default function JournalPage() {
                   onChange={(event) => setFeelingNow(event.target.value)}
                   placeholder="A quick sentence about your current state."
                   maxLength={160}
-                  className="w-full rounded-lg border border-[var(--border-soft)] bg-[var(--surface-2)] p-3 text-sm text-[var(--foreground)] placeholder:text-[var(--subtle-text)] outline-none transition-colors focus:border-teal-600"
+                  className="w-full rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-2)] p-4 text-sm text-[var(--foreground)] placeholder:text-[var(--subtle-text)] outline-none transition-all focus:border-teal-400/60 focus:ring-2 focus:ring-teal-400/20"
                   required
                 />
                 <p className="text-right text-[11px] text-[var(--subtle-text)]">{feelingNow.length}/160</p>
               </div>
 
-              <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+              <div className="rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
                 <h3 className="text-sm font-semibold text-[var(--foreground)]">2. What emotion best describes your current state?</h3>
                 <p className="mt-1 text-xs text-[var(--muted-text)]">Select your mood from the wheel.</p>
                 <div className="mt-5">
@@ -221,7 +223,7 @@ export default function JournalPage() {
               </div>
 
               {selectedEmotion ? (
-                <div className="space-y-3 rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+                <div className="space-y-3 rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
                   <h3 className="text-sm font-semibold text-[var(--foreground)]">4. How intense is this feeling? (1-100)</h3>
                   <EmotionIntensitySlider
                     emotion={selectedEmotion}
@@ -230,12 +232,12 @@ export default function JournalPage() {
                   />
                 </div>
               ) : (
-                <div className="rounded-lg border border-dashed border-[var(--border-soft)] bg-[var(--surface-2)] p-5 text-sm text-[var(--muted-text)]">
+                <div className="rounded-3xl border border-dashed border-[var(--border-soft)] bg-[var(--surface-2)] p-6 text-sm text-[var(--muted-text)]">
                   Question 4 unlocks after you select an emotion for question 2.
                 </div>
               )}
 
-              <div className="space-y-3 rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+              <div className="space-y-3 rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
                 <div>
                   <h3 className="text-sm font-semibold text-[var(--foreground)]">3. What influenced your mood today?</h3>
                 </div>
@@ -251,7 +253,7 @@ export default function JournalPage() {
                 <p className="text-right text-[11px] text-[var(--subtle-text)]">{moodInfluence.length}/320</p>
               </div>
 
-              <div className="space-y-3 rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+              <div className="space-y-3 rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
                 <div>
                   <h3 className="text-sm font-semibold text-[var(--foreground)]">5. What is one thing you need right now?</h3>
                 </div>
@@ -261,7 +263,7 @@ export default function JournalPage() {
                   placeholder="Rest, support, clarity, connection, movement, etc."
                   maxLength={180}
                   required
-                  className="w-full rounded-lg border border-[var(--border-soft)] bg-[var(--surface-2)] p-3 text-sm text-[var(--foreground)] placeholder:text-[var(--subtle-text)] outline-none transition-colors focus:border-teal-600"
+                  className="w-full rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-2)] p-4 text-sm text-[var(--foreground)] placeholder:text-[var(--subtle-text)] outline-none transition-all focus:border-teal-400/60 focus:ring-2 focus:ring-teal-400/20"
                 />
                 <p className="text-right text-[11px] text-[var(--subtle-text)]">{needRightNow.length}/180</p>
               </div>
@@ -313,23 +315,33 @@ export default function JournalPage() {
                 </div>
               )}
 
-              <div>
+              <motion.div className="space-y-2">
+                <motion.div animate={selectedEmotion ? { scale: [1, 1.02, 1] } : {}} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>
                   <Button
                     type="submit"
                     isLoading={isBusy}
                     disabled={!isDailyCheckInComplete || isBusy}
-                    className="w-full"
+                    className="w-full relative overflow-hidden"
                   >
-                    Submit Daily Check-In
+                    <span className="relative z-10">Submit Daily Check-In</span>
+                    {selectedMood && (
+                      <motion.div
+                        className="absolute inset-0 opacity-20"
+                        style={{ backgroundColor: selectedMood.color }}
+                        animate={{ opacity: [0.1, 0.3, 0.1] }}
+                        transition={{ repeat: Infinity, duration: 2 }}
+                      />
+                    )}
                   </Button>
-                {isUploading ? <p className="mt-2 text-xs text-teal-500">Uploading image...</p> : null}
-                {isSaving ? <p className="mt-2 text-xs text-[var(--muted-text)]">Saving entry...</p> : null}
-                {saveSuccess ? <p className="mt-2 text-xs font-medium text-teal-500">Entry saved ✓</p> : null}
-                {saveError ? <p className="mt-2 text-xs text-red-400">{saveError}</p> : null}
+                </motion.div>
+                {isUploading ? <p className="text-xs text-teal-500">Uploading image...</p> : null}
+                {isSaving ? <p className="text-xs text-indigo-500">Saving entry...</p> : null}
+                {saveSuccess ? <p className="text-xs font-medium text-emerald-300">Entry saved ✓</p> : null}
+                {saveError ? <p className="text-xs text-red-300">{saveError}</p> : null}
                 {!isDailyCheckInComplete && !isBusy ? (
-                  <p className="mt-2 text-xs text-amber-400">Complete all 5 check-in questions to submit.</p>
+                  <p className="text-xs text-amber-300">Complete all 5 check-in questions to submit.</p>
                 ) : null}
-              </div>
+              </motion.div>
             </form>
 
             <aside className="space-y-6">
@@ -361,12 +373,12 @@ export default function JournalPage() {
                 </div>
               </div>
 
-              <div className="rounded-lg border border-teal-600/30 bg-teal-600/5 p-4">
+              <div className="rounded-3xl border border-[var(--border-soft)] bg-gradient-to-br from-teal-500/10 to-indigo-500/10 p-6">
                 <p className="text-xs uppercase tracking-[0.14em] text-[var(--muted-text)]">Selected Emotion</p>
-                <div className="mt-2 flex items-center gap-3">
-                  <span className="text-xl">{selectedMood?.icon ?? "🫶"}</span>
+                <div className="mt-3 flex items-center gap-3">
+                  <span className="text-2xl">{selectedMood?.icon ?? "🫶"}</span>
                   <div>
-                    <p className="text-sm font-medium text-[var(--foreground)]">
+                    <p className="text-base font-semibold text-[var(--foreground)]">
                       {selectedEmotion ?? "No emotion selected"}
                     </p>
                     <p className="text-xs text-[var(--muted-text)]">
@@ -392,7 +404,7 @@ export default function JournalPage() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="pb-10"
         >
-          <div className="grid md:grid-cols-2 gap-4 border border-[var(--border-soft)] bg-[var(--surface-1)] rounded-lg p-5">
+          <div className="grid md:grid-cols-2 gap-6 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 shadow-2xl">
             {/* Left Half: Individual Forecast */}
             <div className="flex flex-col justify-center space-y-2">
               <h3 className="text-sm tracking-widest text-[var(--muted-text)] uppercase font-semibold">Individual Forecast</h3>
@@ -439,7 +451,7 @@ export default function JournalPage() {
               <p className="mt-3 text-sm text-[var(--muted-text)]">Loading journal timeline...</p>
             </div>
           ) : entries.length === 0 ? (
-            <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-8 text-center">
+            <div className="rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-10 text-center">
               <p className="text-lg font-medium text-[var(--foreground)]">No journal entries yet.</p>
               <p className="mt-2 text-sm text-[var(--subtle-text)]">
                 Start tracking your mood to build your emotional timeline.
@@ -466,9 +478,18 @@ export default function JournalPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/70"
+            className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/90 overflow-hidden"
           >
-            <div className="relative z-10 w-full max-w-md bg-[var(--surface-1)] border border-[var(--border-soft)] p-8 rounded-lg text-center">
+            <motion.img
+              src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1600&q=80"
+              alt="Nature Background"
+              className="absolute inset-0 w-full h-full object-cover opacity-40 blur-sm mix-blend-overlay pointer-events-none"
+              initial={{ scale: 1 }}
+              animate={{ scale: 1.1 }}
+              transition={{ duration: 20, ease: "linear" }}
+            />
+
+            <div className="relative z-10 w-full max-w-2xl bg-black/40 backdrop-blur-md border border-white/20 p-10 rounded-3xl text-center shadow-2xl">
               {(() => {
                 let quote = "Every feeling has its own quiet dignity.";
                 if (savedMood === "Happy") quote = "Radiate your light; the world is catching your glow.";
@@ -478,14 +499,26 @@ export default function JournalPage() {
                 else if (savedMood === "Stressed") quote = "Softness is a strength when the world demands you be hard.";
 
                 return (
-                  <h2 className="text-xl font-serif italic text-[var(--foreground)] leading-relaxed mb-6">
+                  <motion.h2
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-3xl sm:text-4xl font-serif italic text-white leading-relaxed mb-10"
+                  >
                     &ldquo;{quote}&rdquo;
-                  </h2>
+                  </motion.h2>
                 );
               })()}
-              <Button onClick={() => setShowModal(false)} className="px-6 py-2">
-                Continue to Dashboard
-              </Button>
+
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                <Button onClick={() => setShowModal(false)} className="px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/30 text-white rounded-full transition-all">
+                  Continue to Dashboard
+                </Button>
+              </motion.div>
             </div>
           </motion.div>
         )}
