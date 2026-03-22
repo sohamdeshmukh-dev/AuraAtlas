@@ -69,7 +69,7 @@ function BalanceTooltip({ active, payload }: TooltipContentProps) {
   }
 
   return (
-    <div className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-3 shadow-[var(--panel-shadow)] backdrop-blur-md">
+    <div className="rounded-md border border-[var(--border-soft)] bg-[var(--surface-1)] p-2.5 shadow-sm">
       <p className="text-sm font-semibold text-[var(--foreground)]">{point.emotion}</p>
       <p className="mt-1 text-xs text-[var(--muted-text)]">Intensity: {point.intensity}</p>
       <p className="text-xs text-[var(--muted-text)]">Generated Score: {formatScore(point.score)}</p>
@@ -113,23 +113,23 @@ export default function MoodBalanceGraph({ entries }: MoodBalanceGraphProps) {
 
   if (points.length === 0) {
     return (
-      <div className="rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 text-center backdrop-blur-sm">
-        <h3 className="text-lg font-semibold text-[var(--foreground)]">Mood Balance Graph</h3>
-        <p className="mt-4 text-sm text-[var(--muted-text)]">No emotional data yet.</p>
+      <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 text-center">
+        <h3 className="text-sm font-semibold text-[var(--foreground)]">Emotional Balance</h3>
+        <p className="mt-3 text-sm text-[var(--muted-text)]">No data available.</p>
         <p className="mt-1 text-sm text-[var(--subtle-text)]">
-          Start logging your moods to see your emotional balance over time.
+          Begin logging entries to generate balance analysis.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-3xl border border-[var(--border-soft)] bg-[var(--surface-1)] p-6 backdrop-blur-sm">
-      <div className="mb-5 flex items-end justify-between gap-4">
+    <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--surface-1)] p-5">
+      <div className="mb-4 flex items-end justify-between gap-4">
         <div>
-          <h3 className="text-lg font-semibold text-[var(--foreground)]">Mood Balance Graph</h3>
-          <p className="mt-1 text-xs text-[var(--muted-text)]">
-            Emotional highs and lows are natural. This reflects balance over time.
+          <h3 className="text-sm font-semibold text-[var(--foreground)]">Emotional Balance</h3>
+          <p className="mt-0.5 text-[11px] text-[var(--muted-text)]">
+            Score distribution over time. Positive values indicate uplifted states.
           </p>
         </div>
       </div>
@@ -154,13 +154,6 @@ export default function MoodBalanceGraph({ entries }: MoodBalanceGraphProps) {
                 <stop offset="52%" stopColor="rgba(148,163,184,0.9)" />
                 <stop offset="100%" stopColor="rgba(239,68,68,0.95)" />
               </linearGradient>
-              <filter id="balanceGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="3" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
             </defs>
 
             <XAxis
@@ -218,13 +211,12 @@ export default function MoodBalanceGraph({ entries }: MoodBalanceGraphProps) {
               type="monotone"
               dataKey="score"
               stroke="url(#balanceLineStroke)"
-              strokeWidth={3}
-              dot={{ r: 3, fill: "#cbd5e1", stroke: "#0f172a", strokeWidth: 1.5 }}
-              activeDot={{ r: 5, fill: "#f8fafc", stroke: "#0f172a", strokeWidth: 2 }}
+              strokeWidth={2}
+              dot={{ r: 2.5, fill: "#cbd5e1", stroke: "#0f172a", strokeWidth: 1 }}
+              activeDot={{ r: 4, fill: "#f8fafc", stroke: "#0f172a", strokeWidth: 1.5 }}
               isAnimationActive
-              animationDuration={1100}
+              animationDuration={800}
               animationEasing="ease-out"
-              style={{ filter: "url(#balanceGlow)" }}
             />
 
             <Tooltip
