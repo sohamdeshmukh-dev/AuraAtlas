@@ -27,6 +27,13 @@
 - New `app/api/dev/seed/route.ts` — demo data seeding endpoint
 - `app/page.tsx` — demo mode toggle UI
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Fix login page auth flow and rewrite onboarding with full college list
+- [ ] 01-02-PLAN.md — Create demo seed endpoint and add demo mode toggle to dashboard HUD
+- [ ] 01-03-PLAN.md — Wire Supabase realtime to Map3DView for live skyline updates
+
 ---
 
 ### Phase 2: Campus Counselor Dashboard
