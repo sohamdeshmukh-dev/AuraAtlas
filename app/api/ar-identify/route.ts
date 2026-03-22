@@ -71,7 +71,7 @@ ${visualRefData}
 CRITICAL RULES:
 1. If the GPS data shows a building is very close (< 100m), heavily weight that in your identification.
 2. If DETAILED VISUAL REFERENCE DATA is provided above, compare the photo's features against those descriptions — signage text, column style, materials, window patterns, and distinguishing traits. A match on inscribed building name text is virtually definitive.
-3. Look for architectural features: columned portico with "OLSSON HALL" inscription → Olsson Hall. Columned facades with "THE ROTUNDA" or dome → Rotunda. Red brick Georgian → Lawn pavilions. Modern glass/metal → Rice Hall.
+3. Look for architectural features: columned portico with "OLSSON HALL" inscription → Olsson Hall. Columned facades with "THE ROTUNDA" or dome → Rotunda. Red brick Georgian → Lawn pavilions. Modern glass/metal with curved roofline → Rice Hall.
 4. If you truly cannot identify the building, return "Unknown" — do not guess randomly.
 
 Respond ONLY in JSON:
@@ -93,9 +93,40 @@ Respond ONLY in JSON:
       max_tokens: 300,
     });
 
-    const result = JSON.parse(
-      response.choices[0].message.content || "{}"
+    // Safe JSON parse — don't crash on malformed GPT output
+    let result: Record<string, unknown>;
+    try {
+      result = JSON.parse(response.choices[0].message.content || "{}");
+    } catch {
+      console.error(
+        "AR Identify: failed to parse GPT response:",
+        response.choices[0].message.content
+      );
+      result = {
+        building_name: "Unknown",
+        confidence: 0,
+        wellbeing_summary: "Unable to process image.",
+        emoji: "❓",
+      };
+    }
+
+    // Enrich with our building database when we get a match
+    const identifiedName = String(result.building_name || "");
+    const matchedBuilding = UVA_BUILDINGS.find(
+      (b) =>
+        b.name.toLowerCase() === identifiedName.toLowerCase() ||
+        b.id === identifiedName.toLowerCase().replace(/\s+/g, "-")
     );
+
+    if (matchedBuilding) {
+      result.building_id = matchedBuilding.id;
+      result.wellbeing_score = matchedBuilding.wellbeing_score;
+      result.emotion_breakdown = matchedBuilding.emotion_breakdown;
+      result.description = matchedBuilding.description;
+      result.emoji_vibe = matchedBuilding.emoji_vibe;
+      result.category = matchedBuilding.category;
+      result.visual_features = matchedBuilding.visual_features;
+    }
 
     return NextResponse.json(result);
   } catch (error) {
@@ -106,3 +137,4 @@ Respond ONLY in JSON:
     );
   }
 }
+
