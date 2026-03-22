@@ -39,6 +39,8 @@ export default function DemoControls({
               { name: "Newcomb Hall", lat: 38.0358, lng: -78.5064 },
               { name: "Old Cabell", lat: 38.0326, lng: -78.5048 },
               { name: "Rice Hall", lat: 38.0317, lng: -78.5108 },
+              { name: "Olsson Hall", lat: 38.0325, lng: -78.5107 },
+              { name: "Thornton Hall", lat: 38.0330, lng: -78.5100 },
             ].map(loc => (
               <button
                 key={loc.name}

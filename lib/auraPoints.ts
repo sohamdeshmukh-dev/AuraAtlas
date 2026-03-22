@@ -56,3 +56,79 @@ export const FACTOR_WEIGHTS = {
 } as const;
 
 export const MAX_AURA_SCORE = Object.values(FACTOR_WEIGHTS).reduce((sum, f) => sum + f.max, 0); // 1000
+
+// ── Building Exterior Types ───────────────────────────────────────
+export interface BuildingAttributes {
+  architecture: number;   // 0-100
+  modernity: number;      // 0-100
+  activityLevel: number;  // 0-100
+  maintenance: number;    // 0-100
+  openness: number;       // 0-100
+}
+
+export interface BuildingResult {
+  type: 'building';
+  buildingName: string;
+  smileyScore: number;
+  smileyEmoji: string;
+  moodScore: number;
+  moodEmoji: string;
+  attributes: BuildingAttributes;
+  vibe: string;
+}
+
+// ── Indoor Aura Types ─────────────────────────────────────────────
+export interface AuraFeatures {
+  lighting: number;       // 0-100
+  cleanliness: number;    // 0-100
+  spaciousness: number;   // 0-100
+  colorWarmth: number;    // 0-100
+  calmness: number;       // 0-100
+  aesthetic: number;      // 0-100
+}
+
+export interface IndoorAuraResult {
+  type: 'aura';
+  features: AuraFeatures;
+  explanation: string;
+  // These come from the detailed factor analysis (existing system)
+  factors: Record<string, { score: number; description: string }>;
+  summary: string;
+  recommendation: string;
+}
+
+export type ScanResult = IndoorAuraResult | BuildingResult;
+
+// Building attribute display config
+export const BUILDING_ATTRIBUTES = {
+  architecture:  { icon: '🏛️', label: 'Architecture' },
+  modernity:     { icon: '🔬', label: 'Modernity' },
+  activityLevel: { icon: '⚡', label: 'Activity Level' },
+  maintenance:   { icon: '🔧', label: 'Maintenance' },
+  openness:      { icon: '🌤️', label: 'Openness' },
+} as const;
+
+// Aura feature display config
+export const AURA_FEATURES = {
+  lighting:     { icon: '☀️', label: 'Lighting' },
+  cleanliness:  { icon: '✨', label: 'Cleanliness' },
+  spaciousness: { icon: '🏛️', label: 'Spaciousness' },
+  colorWarmth:  { icon: '🎨', label: 'Color Warmth' },
+  calmness:     { icon: '🧘', label: 'Calmness' },
+  aesthetic:    { icon: '🖼️', label: 'Aesthetic' },
+} as const;
+
+export function getSmileyEmoji(score: number): string {
+  if (score >= 85) return '😄';
+  if (score >= 70) return '🙂';
+  if (score >= 50) return '😐';
+  if (score >= 30) return '😕';
+  return '😞';
+}
+
+export function getBuildingSmileReward(smileyScore: number): number {
+  if (smileyScore >= 85) return 60;
+  if (smileyScore >= 70) return 40;
+  if (smileyScore >= 50) return 25;
+  return 15;
+}

@@ -3,9 +3,9 @@
 import { Canvas } from "@react-three/fiber";
 import { XR, createXRStore, XRControllerModel, XRHandModel } from '@react-three/xr';
 import { PerspectiveCamera, OrbitControls, Environment, Sky, Stars } from "@react-three/drei";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import * as THREE from "three";
-import { getVisibleBuildings } from "@/lib/arGeo";
+import { getVisibleBuildings, type VisibleBuilding } from "@/lib/arGeo";
 import BuildingLabel from "./BuildingLabel";
 
 interface ARSceneProps {
@@ -16,16 +16,16 @@ interface ARSceneProps {
 }
 
 function SceneContent({ userLocation, heading, isDemo, debugMode }: ARSceneProps) {
-  const [visibleBuildings, setVisibleBuildings] = useState<any[]>([]);
+  const [visibleBuildings, setVisibleBuildings] = useState<VisibleBuilding[]>([]);
   const lastUpdateRef = useRef<number>(0);
 
   // Update visible buildings when location or heading changes
   useEffect(() => {
     if (!userLocation || heading === null) return;
 
-    // Throttled updates for performance
+    // Throttled updates for performance (300ms minimum between recalculations)
     const now = Date.now();
-    if (now - lastUpdateRef.current < 500) return;
+    if (now - lastUpdateRef.current < 300) return;
     lastUpdateRef.current = now;
 
     const buildings = getVisibleBuildings(
@@ -71,19 +71,24 @@ function SceneContent({ userLocation, heading, isDemo, debugMode }: ARSceneProps
       </mesh>
 
       {/* Building Labels */}
-      {visibleBuildings.map((building) => (
+      {visibleBuildings.map((vb) => (
         <BuildingLabel 
-          key={building.id} 
-          building={building} 
+          key={vb.building.id} 
+          building={vb} 
           isDemo={isDemo}
         />
       ))}
 
       {debugMode && (
-        <mesh position={[0, 1.6, -5]}>
-          <boxGeometry args={[0.5, 0.5, 0.5]} />
-          <meshStandardMaterial color="red" />
-        </mesh>
+        <>
+          {/* Debug: red cube at camera target */}
+          <mesh position={[0, 1.6, -5]}>
+            <boxGeometry args={[0.5, 0.5, 0.5]} />
+            <meshStandardMaterial color="red" />
+          </mesh>
+          {/* Debug: axes helper */}
+          <axesHelper args={[5]} />
+        </>
       )}
     </>
   );
