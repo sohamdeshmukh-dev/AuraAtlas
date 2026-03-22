@@ -19,6 +19,8 @@ import { generateSeedCheckins } from "@/lib/seedCheckins";
 import { useUserLocation } from "@/hooks/useUserLocation";
 import ThermalMoodMatrix from "@/components/ThermalMoodMatrix";
 import { ALL_COLLEGES } from "@/lib/collegeList";
+import AuraLens from "@/components/AuraLens";
+import PresageMonitor from "@/components/PresageMonitor";
 
 const Map3DView = dynamic(() => import("@/components/Map3DView"), {
   ssr: false,
@@ -44,6 +46,7 @@ export default function Home() {
   const [streak, setStreak] = useState(0);
   const [isNewUser, setIsNewUser] = useState(true);
   const [showThermalRadar, setShowThermalRadar] = useState(false);
+  const [showQuietRoute, setShowQuietRoute] = useState(false);
 
   const didAutoCenterRef = useRef(false);
   const city = CITIES[cityIndex];
@@ -342,6 +345,8 @@ export default function Home() {
           setSelectedCampusName={setSelectedCampusName}
           isDroppingMode={isDroppingMode}
           setIsDroppingMode={setIsDroppingMode}
+          isSettingUp={showQuietRoute}
+          setIsSettingUp={setShowQuietRoute}
         />
 
         {/* HUD Moved to Bottom-Center so it NEVER blocks the City Changer */}
@@ -386,67 +391,52 @@ export default function Home() {
           </div>
         </div>
 
-        {/* 🕒 THE MINIMALIST HUD (Bottom-Left) */}
-        <div className="absolute bottom-10 left-6 z-[50] flex items-end gap-6 pointer-events-none">
+        {/* 🕒 THE SENSORY DASHBOARD (Bottom-Left) */}
+        <div className="absolute bottom-10 left-6 z-[50] flex flex-col gap-4 pointer-events-none">
           
-          {/* Left Side: Clock + Thermal */}
-          <div className="flex flex-col gap-1">
-            {/* 1. SEAMLESS CLOCK */}
-            <div className="flex items-baseline gap-1 drop-shadow-lg">
-              <h1 className="text-5xl font-black text-white/90 tracking-tighter tabular-nums">
-                {currentTime.time}
-              </h1>
-              <span className="text-lg font-medium text-white/50 uppercase ml-1">{currentTime.period}</span>
-            </div>
-
-            {/* 2. THERMAL RADAR */}
-            <div className="pointer-events-auto mt-2">
-              <ThermalMoodMatrix 
-                onToggle={setShowThermalRadar} 
-                lat={city.lat} 
-                lng={city.lng} 
-              />
-            </div>
+          {/* SEAMLESS CLOCK */}
+          <div className="flex items-baseline gap-1 drop-shadow-2xl">
+            <h1 className="text-5xl font-black text-white tracking-tighter drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+              {currentTime.time}
+            </h1>
+            <span className="text-lg font-medium text-white/70 uppercase ml-1">{currentTime.period}</span>
           </div>
 
-          {/* Vertical Divider */}
-          <div className="w-px h-16 bg-white/10 mb-2 invisible sm:visible" />
+          {/* ✨ THE UNIFIED CONTROL GRID ✨ */}
+          <div className="pointer-events-auto flex flex-col gap-2 w-72">
+            
+            {/* Top 4 Tools in a perfect 2x2 Grid */}
+            <div className="grid grid-cols-2 gap-2">
+              <ThermalMoodMatrix onToggle={setShowThermalRadar} lat={city.lat} lng={city.lng} />
+              <AuraLens isActive={isARModeActive} setIsActive={setIsARModeActive} />
+              <PresageMonitor />
+              
+              {/* Locate Me Button */}
+              {userLocation.latitude !== null && (
+                <button 
+                  onClick={() => setLocateMeTrigger(n => n + 1)}
+                  className="flex items-center justify-between px-4 py-2.5 bg-black/20 backdrop-blur-2xl border border-white/10 rounded-2xl text-white/80 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] group w-full"
+                >
+                  <span className="text-[10px] font-bold tracking-widest uppercase mt-[1px]">Locate</span>
+                  <span className="text-sm group-hover:scale-110 transition-transform drop-shadow-md">📍</span>
+                </button>
+              )}
+            </div>
 
-          {/* Right Side: Integrated Buttons */}
-          <div className="flex flex-col gap-2 mb-2 pointer-events-auto">
-            {/* 1. Integrated 'Locate Me' Pill */}
-            {userLocation.latitude !== null && (
-              <button 
-                onClick={() => setLocateMeTrigger(n => n + 1)}
-                className="flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-xl border border-white/10 rounded-full text-white/70 hover:text-white hover:bg-black/60 hover:border-white/30 transition-all shadow-2xl group"
-              >
-                <span className="text-[10px] font-bold tracking-widest uppercase mt-[1px]">
-                  Locate Me
-                </span>
-                <span className="text-sm group-hover:scale-110 transition-transform">
-                  📍
-                </span>
-              </button>
-            )}
-
-            {/* 2. Anon Check-In Button */}
+            {/* Anon Check-In spans the full width at the bottom to anchor the grid */}
             <button 
               onClick={() => setIsDroppingMode(!isDroppingMode)}
-              className={`flex items-center justify-between gap-3 px-4 py-2 rounded-full border transition-all duration-300 backdrop-blur-xl ${
+              className={`flex items-center justify-between gap-2 px-4 py-2.5 backdrop-blur-2xl border rounded-2xl transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] group w-full ${
                 isDroppingMode 
-                  ? "bg-purple-900/40 border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)]" 
-                  : "bg-black/40 border-white/10 hover:border-purple-500/50 hover:bg-black/60"
+                  ? "bg-purple-900/40 border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)] text-white" 
+                  : "bg-black/20 border-white/10 hover:bg-white/10 hover:border-white/20 text-white/80 hover:text-white"
               }`}
             >
-              <span className={`text-[10px] font-bold tracking-widest uppercase ${isDroppingMode ? "text-purple-300" : "text-white/70"}`}>
-                Anon Check-In
-              </span>
-              <span className={`text-sm ${isDroppingMode ? "animate-pulse drop-shadow-[0_0_5px_rgba(168,85,247,0.8)]" : "opacity-70 grayscale"}`}>
-                ✈️
-              </span>
+              <span className={`text-[10px] font-bold tracking-widest uppercase mt-[1px] ${isDroppingMode ? "text-purple-300" : ""}`}>Anon Check-In</span>
+              <span className={`text-sm group-hover:scale-110 transition-transform drop-shadow-md ${isDroppingMode ? "animate-pulse drop-shadow-[0_0_5px_rgba(168,85,247,0.8)]" : ""}`}>✈️</span>
             </button>
-          </div>
 
+          </div>
         </div>
 
         {/* 🧭 NAVIGATION CONTROLS (Bottom-Right) */}
@@ -513,14 +503,6 @@ export default function Home() {
               </span>
             </button>
 
-            {/* 3. Aura Lens Trigger Button */}
-            <button
-              onClick={() => setIsARModeActive(true)}
-              className="bg-indigo-600/90 hover:bg-indigo-500 backdrop-blur-md text-white font-bold py-2.5 px-4 rounded-xl shadow-[0_0_15px_rgba(79,70,229,0.5)] border border-indigo-400/30 transition-all flex items-center gap-2"
-            >
-              <span className="text-lg">👁️</span> Aura Lens
-            </button>
-
             {/* 4. Cinematic Button */}
             <button
               onClick={() => setIsSpinning(!isSpinning)}
@@ -530,8 +512,6 @@ export default function Home() {
             </button>
           </div>
 
-          {/* ✨ THE NEW INTEGRATED 'LOCATE ME' PILL ✨ */}
-          {/* (Note: Already moved to the bottom-left near the clock!) */}
         </div>
 
         {/* Location error toast */}

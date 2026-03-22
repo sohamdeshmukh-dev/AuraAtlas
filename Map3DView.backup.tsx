@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useCallback, useState } from "react";
 import mapboxgl from "mapbox-gl";
@@ -102,8 +102,6 @@ interface Map3DViewProps {
   setSelectedCampusName?: (name: string) => void;
   isDroppingMode?: boolean;
   setIsDroppingMode?: (active: boolean) => void;
-  isSettingUp?: boolean;
-  setIsSettingUp?: (active: boolean) => void;
 }
 
 // 1. Define the possible times
@@ -158,8 +156,6 @@ export default function Map3DView({
   setSelectedCampusName,
   isDroppingMode = false,
   setIsDroppingMode,
-  isSettingUp = false,
-  setIsSettingUp,
 }: Map3DViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -176,6 +172,7 @@ export default function Map3DView({
   const INITIAL_VIEW = { longitude: cityConfig.center[0], latitude: cityConfig.center[1], zoom: 14 };
   
   // 2. New states for the Address Setup phase
+  const [isSettingUp, setIsSettingUp] = useState(false);
   const [fromAddress, setFromAddress] = useState("My Current Location");
   const [toAddress, setToAddress] = useState("");
 
@@ -197,7 +194,7 @@ export default function Map3DView({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [trackingId, setTrackingId] = useState<number | null>(null);
 
-  // ✈️ Paper Airplanes State
+  // Γ£ê∩╕Å Paper Airplanes State
   const [airplanes, setAirplanes] = useState<any[]>([]);
   const [draftLocation, setDraftLocation] = useState<{lat: number, lng: number, screenX: number, screenY: number} | null>(null);
   const [draftMessage, setDraftMessage] = useState("");
@@ -249,7 +246,7 @@ export default function Map3DView({
       const shareUrl = `${window.location.origin}/track/${sessionId}`;
       navigator.clipboard.writeText(shareUrl);
       toast.success("Safe Circle Active! Tracking link copied.", {
-        icon: '🛡️',
+        icon: '≡ƒ¢í∩╕Å',
         style: {
           borderRadius: '12px',
           background: '#0f172a',
@@ -264,7 +261,7 @@ export default function Map3DView({
         setTrackingId(null);
       }
       toast.error("Safe Circle Deactivated.", {
-        icon: '🛑',
+        icon: '≡ƒ¢æ',
         style: {
           borderRadius: '12px',
           background: '#0f172a',
@@ -275,13 +272,13 @@ export default function Map3DView({
     }
   };
 
-  // ✈️ Fetch all paper airplanes from Supabase
+  // Γ£ê∩╕Å Fetch all paper airplanes from Supabase
   const fetchAirplanes = async () => {
     const { data } = await supabase.from('paper_airplanes').select('*');
     if (data) setAirplanes(data);
   };
 
-  // ✈️ Insert a new airplane and refresh
+  // Γ£ê∩╕Å Insert a new airplane and refresh
   const dropAirplane = async () => {
     if (!draftMessage.trim() || !draftLocation) return;
     await supabase.from('paper_airplanes').insert([{
@@ -292,7 +289,7 @@ export default function Map3DView({
     setDraftLocation(null);
     setDraftMessage("");
     fetchAirplanes();
-    toast.success("Note sent! ✈️", {
+    toast.success("Note sent! Γ£ê∩╕Å", {
       style: { borderRadius: '12px', background: '#0f172a', color: '#a78bfa', border: '1px solid rgba(167,139,250,0.3)' }
     });
   };
@@ -465,7 +462,7 @@ export default function Map3DView({
     // 1. Force clear all route states
     setQuietRoute(null);
     setRouteStats(null);
-    setIsSettingUp?.(false);
+    setIsSettingUp(false);
     setToAddress("");
     setFromAddress("My Current Location");
 
@@ -503,7 +500,7 @@ export default function Map3DView({
     []
   );
 
-  // ── Initialise map ──────────────────────────────────────────────
+  // ΓöÇΓöÇ Initialise map ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
@@ -521,7 +518,7 @@ export default function Map3DView({
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
 
     map.on("style.load", () => {
-      // ── Terrain ──────────────────────────────────────────────
+      // ΓöÇΓöÇ Terrain ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
       map.addSource("mapbox-dem", {
         type: "raster-dem",
         url: "mapbox://mapbox.mapbox-terrain-dem-v1",
@@ -538,7 +535,7 @@ export default function Map3DView({
         "star-intensity": 0.0,
       });
 
-      // ── City mask ────────────────────────────────────────────
+      // ΓöÇΓöÇ City mask ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
       map.addSource("city-mask", {
         type: "geojson",
         data: buildCityMask(city),
@@ -565,7 +562,7 @@ export default function Map3DView({
         },
       });
 
-      // ── Declutter map (mute POIs) ──────────────────────────
+      // ΓöÇΓöÇ Declutter map (mute POIs) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
       const layers = map.getStyle().layers;
       layers?.forEach((layer: any) => {
         if (
@@ -619,13 +616,13 @@ export default function Map3DView({
 
       waitForSource(map, "composite", add3DBuildings);
 
-      // ── Point source (for heatmap + circle layers) ──────────
+      // ΓöÇΓöÇ Point source (for heatmap + circle layers) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
       map.addSource("mood-points", {
         type: "geojson",
         data: pointData(checkins),
       });
 
-      // ── Circle detail at high zoom ───────────────────────────
+      // ΓöÇΓöÇ Circle detail at high zoom ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
       map.addLayer({
         id: "mood-circles",
         type: "circle",
@@ -644,7 +641,7 @@ export default function Map3DView({
         },
       });
 
-      // ── Popups ───────────────────────────────────────────────
+      // ΓöÇΓöÇ Popups ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
       map.on("click", "mood-circles", (e) => {
         const f = e.features?.[0];
         if (!f || f.geometry.type !== "Point") return;
@@ -674,7 +671,7 @@ export default function Map3DView({
         });
       }
 
-      // ── Paper Airplanes Handled via isolated useEffect below ──
+      // ΓöÇΓöÇ Paper Airplanes Handled via isolated useEffect below ΓöÇΓöÇ
 
 
       // Right-click to open draft modal
@@ -692,7 +689,7 @@ export default function Map3DView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
-  // 🌍 THE LIVE METEOROLOGICAL HEAT MAP (Thermal Radar)
+  // ≡ƒîì THE LIVE METEOROLOGICAL HEAT MAP (Thermal Radar)
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !readyRef.current) return;
@@ -762,7 +759,7 @@ export default function Map3DView({
     };
   }, []); // Empty dependency array so it only runs once on mount
 
-  // ── Fly to city + update mask ────────────────────────────────
+  // ΓöÇΓöÇ Fly to city + update mask ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
   useEffect(() => {
     if (onToggleSpin) onToggleSpin(false);
     const map = mapRef.current;
@@ -838,7 +835,7 @@ export default function Map3DView({
     }, 50);
   }, [campuses, city, focusRegisteredCampus, focusedCampus, registeredCollege]);
 
-  // ── GPS location changes → re-center mask on user ────────────
+  // ΓöÇΓöÇ GPS location changes ΓåÆ re-center mask on user ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !readyRef.current || userLatitude === null || userLongitude === null) return;
@@ -848,7 +845,7 @@ export default function Map3DView({
     }
   }, [userLatitude, userLongitude, city.radius]);
 
-  // ── Update mood data (both sources) ──────────────────────────
+  // ΓöÇΓöÇ Update mood data (both sources) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !readyRef.current) return;
@@ -858,8 +855,8 @@ export default function Map3DView({
     if (ptSrc) ptSrc.setData(pointData(checkins));
   }, [checkins, pointData]);
 
-  // ── Apply Emotional Weather OR Time Theme (ADDITIVE / ISOLATED) ──
-  // ── Locate Me: fly to user location ─────────────────────────────
+  // ΓöÇΓöÇ Apply Emotional Weather OR Time Theme (ADDITIVE / ISOLATED) ΓöÇΓöÇ
+  // ΓöÇΓöÇ Locate Me: fly to user location ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
   useEffect(() => {
     if (locateMeTrigger === 0) return;
     const map = mapRef.current;
@@ -876,7 +873,7 @@ export default function Map3DView({
     });
   }, [locateMeTrigger, userLatitude, userLongitude]);
 
-  // ── 3D Emotional Weather: Native Mapbox Rain/Snow/Fog (ADDITIVE / ISOLATED) ──
+  // ΓöÇΓöÇ 3D Emotional Weather: Native Mapbox Rain/Snow/Fog (ADDITIVE / ISOLATED) ΓöÇΓöÇ
 
   useEffect(() => {
     const map = mapRef.current;
@@ -886,7 +883,7 @@ export default function Map3DView({
     // not yet in the @types/mapbox-gl package
     const m = map as any;
 
-    // ── Step 1: Always reset previous weather particles ──
+    // ΓöÇΓöÇ Step 1: Always reset previous weather particles ΓöÇΓöÇ
     try { m.setRain(null); } catch { /* rain API not available in this GL version */ }
     try { m.setSnow(null); } catch { /* snow API not available in this GL version */ }
 
@@ -946,7 +943,7 @@ export default function Map3DView({
         break;
 
       case "Stressed":
-        // Oppressive, suffocating haze — no particles
+        // Oppressive, suffocating haze ΓÇö no particles
         map.setFog({
           color: "#8b4513",
           "high-color": "#3e1a05",
@@ -979,7 +976,7 @@ export default function Map3DView({
         break;
 
       default:
-        // Neutral / null — standard dark fog
+        // Neutral / null ΓÇö standard dark fog
         map.setFog({
           color: "#242b3b",
           "high-color": "#0b0f17",
@@ -991,7 +988,7 @@ export default function Map3DView({
     }
   }, [selectedMood, selectedTime]);
 
-  // ── Cinematic Auto-Spin (ADDITIVE / ISOLATED) ──
+  // ΓöÇΓöÇ Cinematic Auto-Spin (ADDITIVE / ISOLATED) ΓöÇΓöÇ
   useEffect(() => {
     if (!isSpinning || !mapInstance) {
       if (spinFrameRef.current) {
@@ -1016,7 +1013,7 @@ export default function Map3DView({
     };
   }, [isSpinning, mapInstance]);
 
-  // ── Safe Spaces: Native WebGL layers (zero-drift, ADDITIVE / ISOLATED) ──
+  // ΓöÇΓöÇ Safe Spaces: Native WebGL layers (zero-drift, ADDITIVE / ISOLATED) ΓöÇΓöÇ
 
   // Inject dark popup CSS once
   if (typeof document !== "undefined" && !document.getElementById("safe-space-popup-style")) {
@@ -1098,7 +1095,7 @@ export default function Map3DView({
           "match", ["get", "category"],
           "Parks", "#10b981",
           "Libraries", "#3b82f6",
-          "Quiet Cafés", "#f59e0b",
+          "Quiet Caf├⌐s", "#f59e0b",
           "Meditation Rooms", "#8b5cf6",
           "Campus Spaces", "#f97316",
           "#8b5cf6",
@@ -1119,7 +1116,7 @@ export default function Map3DView({
           "match", ["get", "category"],
           "Parks", "#34d399",
           "Libraries", "#60a5fa",
-          "Quiet Cafés", "#fbbf24",
+          "Quiet Caf├⌐s", "#fbbf24",
           "Meditation Rooms", "#a78bfa",
           "Campus Spaces", "#fb923c",
           "#a78bfa",
@@ -1129,7 +1126,7 @@ export default function Map3DView({
       },
     });
 
-    // Click → premium dark popup
+    // Click ΓåÆ premium dark popup
     map.on("click", "safe-spaces-core", (e) => {
       const f = e.features?.[0];
       if (!f || f.geometry.type !== "Point") return;
@@ -1209,7 +1206,7 @@ export default function Map3DView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ✈️ Render Paper Airplane markers whenever the data changes
+  // Γ£ê∩╕Å Render Paper Airplane markers whenever the data changes
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -1229,7 +1226,7 @@ export default function Map3DView({
             class="w-12 h-12 transition-all duration-300 transform scale-100 group-hover:scale-125 group-hover:-translate-y-1 hover:rotate-6 drop-shadow-[0_0_5px_rgba(168,85,247,0.9)] drop-shadow-[0_0_15px_rgba(168,85,247,0.7)]"
             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
           />
-          <div style="display:none" class="w-10 h-10 flex items-center justify-center text-2xl">✈️</div>
+          <div style="display:none" class="w-10 h-10 flex items-center justify-center text-2xl">Γ£ê∩╕Å</div>
           <div class="absolute bottom-14 left-1/2 -translate-x-1/2 hidden group-hover:block w-52 bg-[#0f172a] border border-purple-500/30 text-white text-xs p-3 rounded-xl shadow-2xl pointer-events-none z-50">
             <p class="italic text-purple-200">&ldquo;${plane.message}&rdquo;</p>
           </div>
@@ -1298,7 +1295,7 @@ export default function Map3DView({
     });
   }, [quietRoute, mapInstance]);
 
-  // ✈️ Paper Airplane Click Handler Logic (State-aware)
+  // Γ£ê∩╕Å Paper Airplane Click Handler Logic (State-aware)
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -1319,25 +1316,25 @@ export default function Map3DView({
 
     map.on('click', handleMapClick);
     
-    // ✨ The magic touch: Change cursor to crosshair in dropping mode
+    // Γ£¿ The magic touch: Change cursor to crosshair in dropping mode
     if (isDroppingMode) {
       map.getCanvas().style.cursor = 'crosshair';
     } else {
       map.getCanvas().style.cursor = '';
-    }    return () => {
+    }
+
+    return () => {
       map.off('click', handleMapClick);
     };
   }, [isDroppingMode]);
 
-
-
-  // ⛈️ Get dynamic sentiment based on current city
+  // Γ¢ê∩╕Å Get dynamic sentiment based on current city
   const getSentimentUI = (cityName: string) => {
     // If they switch to Dallas (Error / High Stress)
     if (cityName.includes("Dallas") || cityName.includes("DALLAS")) {
       return {
         wrapper: "bg-rose-900/20 border-rose-500/30 hover:bg-rose-900/40",
-        icon: "⛈️",
+        icon: "Γ¢ê∩╕Å",
         iconShadow: "drop-shadow-[0_0_5px_rgba(244,63,94,0.8)]",
         textClass: "text-rose-400",
         title: "High Stress Area",
@@ -1350,7 +1347,7 @@ export default function Map3DView({
     // Default / Philadelphia (Good / Calm)
     return {
       wrapper: "bg-emerald-900/20 border-emerald-500/30 hover:bg-emerald-900/40",
-      icon: "✨",
+      icon: "Γ£¿",
       iconShadow: "drop-shadow-[0_0_5px_rgba(16,185,129,0.8)]",
       textClass: "text-emerald-400",
       title: "Calm Atmosphere",
@@ -1386,7 +1383,7 @@ export default function Map3DView({
         accuracy={userAccuracy}
       />
 
-      {/* Safe Space Modal — shown on right-click */}
+      {/* Safe Space Modal ΓÇö shown on right-click */}
       {draftSafeSpace && (
         <AddSafeSpaceModal
           lat={draftSafeSpace.lat}
@@ -1396,7 +1393,7 @@ export default function Map3DView({
         />
       )}
 
-      {/* ✈️ PAPER AIRPLANE DRAFT UI */}
+      {/* Γ£ê∩╕Å PAPER AIRPLANE DRAFT UI */}
       {draftLocation && (
         <div
           className="absolute z-[100] pointer-events-auto animate-in fade-in zoom-in-95 duration-200"
@@ -1433,101 +1430,6 @@ export default function Map3DView({
           </div>
           {/* Arrow pointer */}
           <div className="w-3 h-3 bg-neutral-950 border-r border-b border-purple-500/50 rotate-45 mx-auto -mt-1.5" />
-        </div>
-      )}
-
-      <div className="absolute inset-x-0 bottom-10 flex flex-col items-center justify-center pointer-events-none z-50">
-        {/* --- THE ROUTING LOGIC --- */}
-        {isSettingUp && !quietRoute ? (
-          /* THE EXPANDED ROUTE BAR (Shows when clicked) */
-          <div className="w-[calc(100vw-48px)] max-w-lg bg-black/80 backdrop-blur-2xl border border-white/10 p-2.5 rounded-2xl shadow-2xl flex items-center gap-2 animate-fade-in-up pointer-events-auto">
-            <div className="flex-1 flex items-center bg-white/5 rounded-xl px-3 py-2 border border-white/5">
-              <span className="text-xs text-neutral-400 mr-2">📍</span>
-              <input type="text" placeholder="Current Location" value={fromAddress} onChange={(e) => setFromAddress(e.target.value)} className="bg-transparent text-sm text-white w-full outline-none" />
-            </div>
-            <span className="text-neutral-500 text-xs">→</span>
-            <div className="flex-1 flex items-center bg-indigo-500/10 rounded-xl px-3 py-2 border border-indigo-500/20">
-              <span className="text-xs text-indigo-400 mr-2">🍃</span>
-              <input type="text" placeholder="Destination" value={toAddress} onChange={(e) => setToAddress(e.target.value)} className="bg-transparent text-sm text-white w-full outline-none" />
-            </div>
-            <button onClick={() => {
-                if (fromAddress === "My Current Location" && userLocation) {
-                  calculateQuietRoute(userLocation);
-                } else {
-                  calculateQuietRoute();
-                }
-              }} className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold text-sm shadow-lg transition-colors pointer-events-auto">
-              Go
-            </button>
-            <button onClick={() => setIsSettingUp?.(false)} className="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-xl text-sm transition-colors pointer-events-auto">
-              ✕
-            </button>
-          </div>
-        ) : !quietRoute ? (
-          /* ✨ THE UPGRADED, PROFESSIONAL BUTTON (Shows by default) ✨ */
-          <button 
-            onClick={() => setIsSettingUp?.(true)}
-            className="flex items-center justify-center gap-3 px-8 py-3.5 bg-black/50 backdrop-blur-2xl border border-white/10 rounded-2xl text-white/90 hover:bg-black/70 hover:border-white/20 transition-all shadow-2xl hover:shadow-indigo-500/10 group w-72 pointer-events-auto"
-          >
-            <span className="text-lg group-hover:-translate-x-1 transition-transform text-indigo-400">🍃</span>
-            <span className="text-[11px] font-bold tracking-widest uppercase">
-              Find Quiet Route
-            </span>
-          </button>
-        ) : null}
-      </div>
-
-      {/* STATE 3: THE COMPACT ACTIVE HUD (Top of Screen) */}
-      {quietRoute && (
-        <div className="absolute top-6 inset-x-0 flex justify-center z-50 pointer-events-none">
-          <div className="pointer-events-auto flex items-center gap-6 bg-neutral-900/80 border border-violet-500/30 backdrop-blur-md px-5 py-2.5 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.5)] animate-in slide-in-from-top-4 duration-500">
-            {/* Live Indicator */}
-            <div className="flex items-center gap-2 border-r border-neutral-800 pr-4">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500"></span>
-              </span>
-              <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest">Quiet Route</span>
-            </div>
-
-            <div className="w-px h-6 bg-neutral-700" />
-
-            {/* THE NEW POV BUTTON */}
-            <button 
-              onClick={() => {
-                const coords = quietRoute.geometry.coordinates;
-                if (coords && coords.length >= 2) {
-                  enterPOVMode(coords[0], coords[1]);
-                }
-              }}
-              className="flex items-center gap-2 group cursor-pointer hover:bg-neutral-800 px-3 py-1 rounded-lg transition-colors"
-            >
-              <span className="text-white font-bold text-lg group-hover:text-violet-400 transition-colors">{routeStats?.eta}</span>
-              <span className="text-neutral-500 text-sm font-medium">{routeStats?.distance}</span>
-              <span className="ml-2 bg-violet-500/20 text-violet-300 px-2 py-1 rounded text-[10px] font-bold tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-                ENTER POV
-              </span>
-            </button>
-
-            <div className="w-px h-6 bg-neutral-700" />
-
-            {/* Instruction Section (The "Sleek" part) */}
-            <div className="hidden md:flex items-center gap-2 text-xs text-neutral-300 font-medium max-w-[200px] truncate">
-              <svg className="w-3 h-3 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-              {routeStats?.nextTurn}
-            </div>
-
-            {/* End Button */}
-            <button 
-              onClick={(e) => {
-                e.preventDefault(); // Prevents any weird page reloads
-                handleEndNavigation();
-              }} 
-              className="bg-red-500/20 text-red-400 hover:bg-red-500/30 hover:text-red-300 px-4 py-1.5 rounded-full text-[11px] font-bold transition-colors border border-red-500/20 z-50 pointer-events-auto"
-            >
-              End
-            </button>
-          </div>
         </div>
       )}
     </>

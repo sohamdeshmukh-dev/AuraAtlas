@@ -56,7 +56,7 @@ export default function ThermalMoodMatrix({
 
   return (
     // 'relative' ensures the popup card anchors directly to this tiny button!
-    <div className="relative z-[50] flex flex-col items-start pointer-events-auto">
+    <div className="relative z-[50] flex flex-col items-start pointer-events-auto w-full">
       
       {/* 🧠 The AI Popup Card (Renders absolute, popping UP above the button) */}
       {isActive && (
@@ -93,7 +93,7 @@ export default function ThermalMoodMatrix({
       {/* 🎛️ The Tiny Integration Button (This sits next to your clock) */}
       <button 
         onClick={handleToggle} 
-        className={`flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md border transition-all duration-300 shadow-lg ${
+        className={`flex items-center justify-between w-full px-4 py-2.5 rounded-2xl backdrop-blur-md border transition-all duration-300 shadow-lg ${
           isActive 
             ? "bg-rose-500/20 border-rose-500/50 text-rose-200" 
             : "bg-black/50 border-white/10 text-neutral-400 hover:bg-black/70 hover:text-white"
