@@ -32,6 +32,28 @@ const Map3DView = dynamic(() => import("@/components/Map3DView"), {
   ssr: false,
 });
 
+const PUBLISHABLE_KEY = "pk_VG_5jIWbQH2FsoADC0Lfqw";
+
+// 🏫 CAMPUS BRANDING DICTIONARY
+const campusData = {
+  uva: {
+    id: "uva",
+    name: "University of Virginia",
+    icon: "V", // Fallback text
+    logoUrl: `https://img.logo.dev/virginia.edu?token=${PUBLISHABLE_KEY}&size=100&format=png`,
+    color: "bg-white", // White background makes the Navy/Orange logo pop perfectly
+    coords: [-78.503, 38.033]
+  },
+  temple: {
+    id: "temple",
+    name: "Temple University",
+    icon: "T",
+    logoUrl: `https://img.logo.dev/temple.edu?token=${PUBLISHABLE_KEY}&size=100&format=png`,
+    color: "bg-white", // White background for the Cherry Red T
+    coords: [-75.158, 39.981]
+  }
+};
+
 export default function Home() {
 
   const [checkins, setCheckins] = useState<CheckIn[]>([]);
@@ -82,9 +104,9 @@ export default function Home() {
   }, []);
   
   const userCampus = ALL_COLLEGES.find(college => college.name === selectedCampusName);
+  const [activeCampus, setActiveCampus] = useState(campusData.uva);
   const [isDroppingMode, setIsDroppingMode] = useState(false);
-  const [isSeeding, setIsSeeding] = useState(false);
-  const [demoStatus, setDemoStatus] = useState<'idle' | 'ok' | 'err'>('idle');
+
 
   const fetchCheckins = useCallback(async () => {
     try {
@@ -151,27 +173,7 @@ export default function Home() {
     setLocateMeTrigger((n) => n + 1);
   }, [userLocation]);
 
-  const handleSeedDemo = async () => {
-    setIsSeeding(true);
-    setDemoStatus('idle');
-    try {
-      const res = await fetch('/api/dev/seed', { method: 'POST' });
-      if (res.ok) {
-        await fetchCheckins();
-        setDemoStatus('ok');
-      } else {
-        const body = await res.json().catch(() => ({}));
-        console.error('Seed failed:', body?.error);
-        setDemoStatus('err');
-      }
-    } catch (e) {
-      console.error('Seed failed:', e);
-      setDemoStatus('err');
-    } finally {
-      setIsSeeding(false);
-      setTimeout(() => setDemoStatus('idle'), 3000);
-    }
-  };
+
 
   useEffect(() => {
     let isMounted = true;
@@ -651,25 +653,36 @@ export default function Home() {
                 ))}
             </div>
 
-            <button
+            {/* 🏫 SWITCH CAMPUS DROPDOWN BUTTON (Bottom-Right) */}
+            <button 
               onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-              className={`bg-indigo-600 hover:bg-indigo-500 text-white p-2 pr-4 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.4)] border border-indigo-400/30 transition-all flex items-center gap-3 ${
+              className={`flex items-center gap-3 bg-indigo-600/90 hover:bg-indigo-500 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl border border-white/10 transition-all group ${
                 isDrawerOpen ? 'ring-2 ring-white scale-105' : ''
               }`}
             >
-              <div className="bg-white/10 p-1.5 rounded-lg">
-                <img
-                  src={`https://img.logo.dev/${userCampus?.domain}?token=pk_VG_5jIWbQH2FsoADC0Lfqw&size=128`}
-                  className="w-7 h-7 object-contain"
-                  alt="Home"
-                  onError={(e) => {
-                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${userCampus?.name?.charAt(0) || 'H'}&background=random&color=fff`;
-                  }}
-                />
+              
+              {/* ✨ THE DYNAMIC IMAGE LOGO BLOCK ✨ */}
+              <div className={`flex items-center justify-center w-7 h-7 ${activeCampus.color} rounded-md shadow-inner overflow-hidden transition-transform group-hover:scale-110`}>
+                {activeCampus.logoUrl ? (
+                  <img 
+                    src={activeCampus.logoUrl} 
+                    alt={`${activeCampus.name} Logo`} 
+                    className="w-full h-full object-contain p-0.5" 
+                  />
+                ) : (
+                  /* Fallback to text if no logo URL exists */
+                  <span className="text-white font-black text-xs font-serif tracking-tighter">
+                    {activeCampus.icon}
+                  </span>
+                )}
               </div>
-              <span className="text-xs font-black tracking-tighter uppercase text-white">
+
+              {/* Button Text */}
+              <span className="text-[11px] font-black text-white tracking-widest uppercase">
                 {isDrawerOpen ? "CLOSE SELECTOR" : "SWITCH CAMPUS"}
               </span>
+
+              {/* Dropdown Arrow */}
               <ChevronDown className={`h-3.5 w-3.5 text-indigo-200 transition-transform ${isDrawerOpen ? 'rotate-180' : ''}`} />
             </button>
 
@@ -683,21 +696,6 @@ export default function Home() {
               <RotateCw className="h-4 w-4" />
             </button>
 
-            {/* Demo Mode */}
-            <button
-              onClick={handleSeedDemo}
-              disabled={isSeeding}
-              className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50 ${
-                demoStatus === 'ok'
-                  ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
-                  : demoStatus === 'err'
-                  ? 'border-red-500/40 bg-red-500/10 text-red-300'
-                  : 'border-indigo-500/40 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20'
-              }`}
-              title="Load demo data"
-            >
-              {isSeeding ? '⏳' : demoStatus === 'ok' ? '✓ Seeded' : demoStatus === 'err' ? '✗ Failed' : 'Demo'}
-            </button>
           </div>
         </div>
 

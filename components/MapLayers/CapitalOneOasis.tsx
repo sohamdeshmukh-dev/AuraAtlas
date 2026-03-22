@@ -281,15 +281,24 @@ export default function CapitalOneOasis({ map, isVisible = true }: CapitalOneOas
       map.once("style.load", init);
     }
 
+    // Cleanup when component unmounts
     return () => {
-      // Cleanup
-      markersRef.current.forEach((m) => m.remove());
+      // 1. Safe React/DOM cleanups (Markers & Popups)
+      markersRef.current.forEach(m => m.remove());
       markersRef.current = [];
-      popupsRef.current.forEach((p) => p.remove());
-      popupsRef.current = [];
+      
+      if (popupsRef && popupsRef.current) {
+        popupsRef.current.forEach(p => p.remove());
+        popupsRef.current = [];
+      }
 
-      if (map.getLayer("cap-one-glow")) map.removeLayer("cap-one-glow");
-      if (map.getSource("capital-one-source")) map.removeSource("capital-one-source");
+      // 2. ✨ THE BULLETPROOF FIX ✨
+      // Only touch Mapbox layers if the style engine is still 100% intact!
+      if (map && map.isStyleLoaded()) {
+        if (map.getLayer("cap-one-monolith")) map.removeLayer("cap-one-monolith");
+        if (map.getLayer("cap-one-glow")) map.removeLayer("cap-one-glow");
+        if (map.getSource("capital-one-source")) map.removeSource("capital-one-source");
+      }
     };
   }, [map]);
   // ✨ THE VISIBILITY TOGGLER ✨
