@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
+import { renderToStaticMarkup } from "react-dom/server";
 
 // 📍 MOCK DATA: Capital One Locations in Charlottesville near UVA
 const capOneLocations = {
@@ -33,9 +34,10 @@ const capOneLocations = {
 
 interface CapitalOneOasisProps {
   map: mapboxgl.Map | null;
+  isVisible?: boolean;
 }
 
-export default function CapitalOneOasis({ map }: CapitalOneOasisProps) {
+export default function CapitalOneOasis({ map, isVisible = true }: CapitalOneOasisProps) {
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const popupsRef = useRef<mapboxgl.Popup[]>([]);
 
@@ -62,7 +64,7 @@ export default function CapitalOneOasis({ map }: CapitalOneOasisProps) {
             12, 80,
             16, 350,
           ],
-          "circle-color": "#D4AF37",
+          "circle-color": "#D6001C",
           "circle-blur": 1,
           "circle-opacity": [
             "interpolate", ["linear"], ["zoom"],
@@ -86,29 +88,48 @@ export default function CapitalOneOasis({ map }: CapitalOneOasisProps) {
         el.style.alignItems = "center";
         el.style.justifyContent = "center";
 
-        el.innerHTML = `
-          <div class="cap-one-marker" style="position:relative;display:flex;align-items:center;justify-content:center;">
-            <div style="position:absolute;width:48px;height:48px;background:rgba(212,175,55,0.35);border-radius:50%;animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite;animation-delay:0.3s;"></div>
-            <div style="position:absolute;width:32px;height:32px;background:rgba(212,175,55,0.55);border-radius:50%;animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite;"></div>
-            <div class="cap-one-pill" style="
-              position:relative;
-              display:flex;
-              align-items:center;
-              gap:6px;
-              padding:5px 10px;
-              background:rgba(0,0,0,0.6);
-              backdrop-filter:blur(16px);
-              border:1px solid rgba(212,175,55,0.5);
-              border-radius:999px;
-              box-shadow:0 4px 24px rgba(0,0,0,0.4);
-              transition:all 0.3s ease;
-              white-space:nowrap;
-            ">
-              <span style="font-size:10px;font-weight:800;color:#D4AF37;text-transform:uppercase;letter-spacing:0.1em;">CapOne</span>
-              <span style="font-size:14px;">☕</span>
+        el.innerHTML = renderToStaticMarkup(
+          <div className="relative flex items-center justify-center">
+            {/* Outer Pulsing Aura - Switched to Red */}
+            <div 
+              style={{
+                position: "absolute",
+                width: "48px",
+                height: "48px",
+                background: "rgba(214, 0, 28, 0.3)",
+                borderRadius: "50%",
+                animation: "ping 1.5s cubic-bezier(0,0,0.2,1) infinite",
+                animationDelay: "0.3s"
+              }}
+            ></div>
+            <div 
+              style={{
+                position: "absolute",
+                width: "32px",
+                height: "32px",
+                background: "rgba(214, 0, 28, 0.5)",
+                borderRadius: "50%",
+                animation: "ping 1.5s cubic-bezier(0,0,0.2,1) infinite"
+              }}
+            ></div>
+            
+            {/* The Container - Switched border to Red */}
+            <div 
+              className="relative flex items-center gap-2 px-3 py-1.5 bg-black/60 backdrop-blur-md border border-[#D6001C]/50 rounded-full shadow-2xl transition-all duration-300"
+              style={{ transition: "all 0.3s ease" }}
+            >
+               <span 
+                 className="text-[10px] font-black text-white uppercase tracking-tighter mt-[1px]"
+                 style={{
+                   textShadow: "-1px -1px 0 #D6001C, 1px -1px 0 #D6001C, -1px 1px 0 #D6001C, 1px 1px 0 #D6001C"
+                 }}
+               >
+                 Capital One
+               </span>
+               <span className="text-sm">☕</span>
             </div>
           </div>
-        `;
+        );
 
         // Inject ping keyframe if not already there
         if (!document.getElementById("cap-one-style")) {
@@ -201,31 +222,34 @@ export default function CapitalOneOasis({ map }: CapitalOneOasisProps) {
                 </div>
               </div>
 
-              <button 
-                style="
-                  width:100%;
-                  display:flex;
-                  align-items:center;
-                  justify-content:center;
-                  gap:8px;
-                  padding:12px;
-                  background:#D4AF37;
-                  color:#000;
-                  border:none;
-                  border-radius:999px;
-                  font-weight:800;
-                  font-size:9px;
-                  text-transform:uppercase;
-                  letter-spacing:0.1em;
-                  cursor:pointer;
-                  transition:all 0.2s ease;
-                  box-shadow:0 4px 16px rgba(212,175,55,0.4);
-                "
-                onmouseover="this.style.background='#fff'"
-                onmouseout="this.style.background='#D4AF37'"
-              >
-                🍃 Draw Quiet Route Here
-              </button>
+              <div style="padding: 2px;">
+                <button 
+                  style="
+                    width:100%;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    gap:8px;
+                    padding:12px;
+                    background:#D6001C;
+                    color:#fff;
+                    border:1px solid transparent;
+                    border-radius:999px;
+                    font-weight:800;
+                    font-size:10px;
+                    text-transform:uppercase;
+                    letter-spacing:0.1em;
+                    cursor:pointer;
+                    transition:all 0.3s ease;
+                    box-shadow:0 8px 16px rgba(214,0,28,0.3);
+                  "
+                  onmouseover="this.style.background='#fff'; this.style.color='#D6001C'; this.style.borderColor='#D6001C'"
+                  onmouseout="this.style.background='#D6001C'; this.style.color='#fff'; this.style.borderColor='transparent'"
+                >
+                  <span style="transition: transform 0.3s ease;">🍃</span>
+                  Draw Quiet Route Here
+                </button>
+              </div>
             </div>
           `;
 
@@ -268,6 +292,31 @@ export default function CapitalOneOasis({ map }: CapitalOneOasisProps) {
       if (map.getSource("capital-one-source")) map.removeSource("capital-one-source");
     };
   }, [map]);
+  // ✨ THE VISIBILITY TOGGLER ✨
+  // This smoothly hides/shows the layers without destroying them!
+  useEffect(() => {
+    if (!map || !map.isStyleLoaded()) return;
+
+    // Convert boolean to Mapbox's specific visibility strings
+    const visibility = isVisible ? "visible" : "none";
+
+    // 1. Hide the 3D Mapbox Layers
+    if (map.getLayer("cap-one-glow")) {
+      map.setLayoutProperty("cap-one-glow", "visibility", visibility);
+    }
+    if (map.getLayer("cap-one-monolith")) {
+      map.setLayoutProperty("cap-one-monolith", "visibility", visibility);
+    }
+
+    // 2. Hide the Custom HTML Markers (The pulsing coffee cups)
+    markersRef.current.forEach(marker => {
+      const el = marker.getElement();
+      if (el) {
+        el.style.display = isVisible ? "block" : "none";
+      }
+    });
+
+  }, [map, isVisible]);
 
   return null; // Logic-only component
 }

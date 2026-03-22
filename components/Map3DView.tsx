@@ -1381,28 +1381,34 @@ export default function Map3DView({
     <>
       <div ref={containerRef} className="h-full w-full" />
       
-      <EmotionWeatherOverlay 
-        map={mapInstance} 
-        checkins={checkins} 
-        isARModeActive={isARModeActive} 
-        setIsARModeActive={setIsARModeActive || (() => {})} 
-      />
-      <ResourceMarkers map={mapInstance} resources={getResourcesByCity(city.name)} />
-      <CampusLayer
-        map={mapInstance}
-        campuses={campuses}
-        registeredCollege={registeredCollege}
-        campusInsights={campusInsights}
-      />
-      <UserLocationLayer
-        map={mapInstance}
-        latitude={userLatitude}
-        longitude={userLongitude}
-        accuracy={userAccuracy}
-      />
+      {/* ✨ THE MASTER TOGGLE: Only show these if Deloitte is OFF ✨ */}
+      {!showDeloittePulse && (
+        <>
+          <EmotionWeatherOverlay 
+            map={mapInstance} 
+            checkins={checkins} 
+            isARModeActive={isARModeActive} 
+            setIsARModeActive={setIsARModeActive || (() => {})} 
+          />
+          <ResourceMarkers map={mapInstance} resources={getResourcesByCity(city.name)} />
+          <CampusLayer
+            map={mapInstance}
+            campuses={campuses}
+            registeredCollege={registeredCollege}
+            campusInsights={campusInsights}
+          />
+          <UserLocationLayer
+            map={mapInstance}
+            latitude={userLatitude}
+            longitude={userLongitude}
+            accuracy={userAccuracy}
+          />
 
-      {/* 🌟 CAPITAL ONE OASIS — Glassmorphic spatial markers */}
-      <CapitalOneOasis map={mapInstance} />
+        </>
+      )}
+
+      {/* 🌟 CAPITAL ONE OASIS — Passed as prop so React doesn't destroy the map layers */}
+      <CapitalOneOasis map={mapInstance} isVisible={!showDeloittePulse} />
 
       {/* 📊 DELOITTE PULSE LAYER — 3D Stress Topography */}
       <DeloittePulseLayer map={mapInstance} isActive={showDeloittePulse} />

@@ -397,7 +397,7 @@ export default function Home() {
           showDeloittePulse={showDeloittePulse}
         />
 
-        {!isNewUser && (
+        {!isNewUser && !showDeloittePulse && (
           <Link
             href="/report"
             className="absolute bottom-32 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/60 border border-white/10 backdrop-blur-xl px-5 py-2.5 rounded-full z-40 hover:bg-black/70 hover:border-white/20 transition-all pointer-events-auto"
@@ -416,7 +416,7 @@ export default function Home() {
           </Link>
         )}
 
-{needsCheckIn && (
+        {needsCheckIn && !showDeloittePulse && (
           <button
             onClick={() => setIsModalOpen(true)}
             className="absolute top-6 right-28 bg-neutral-900 border border-white/15 p-3 rounded-full hover:bg-black hover:translate-x-3 transition-all duration-250 ease-out z-[60] pointer-events-auto"
@@ -429,9 +429,10 @@ export default function Home() {
         )}
 
         {/* 🏝️ THE DYNAMIC ISLAND (Top-Center) */}
-        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[50] pointer-events-auto animate-fade-in-down group">
-          
-          <div className="flex items-center gap-4 bg-black/30 backdrop-blur-3xl border border-white/10 px-6 py-3 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:bg-black/40 hover:border-white/20 transition-all cursor-default">
+        {!showDeloittePulse && (
+          <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[50] pointer-events-auto animate-fade-in-down group">
+            
+            <div className="flex items-center gap-4 bg-black/30 backdrop-blur-3xl border border-white/10 px-6 py-3 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:bg-black/40 hover:border-white/20 transition-all cursor-default">
             
             {/* 1. Location (Now Dynamic) */}
             <div className="flex items-center gap-2">
@@ -466,13 +467,14 @@ export default function Home() {
               </span>
             </div>
 
-          </div>
+            </div>
           
-          {/* Subtle City Switcher Overlay (Hidden until hover) */}
-          <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
-             <CityNavigator currentIndex={cityIndex} onNavigate={setCityIndex} />
+            {/* Subtle City Switcher Overlay (Hidden until hover) */}
+            <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
+               <CityNavigator currentIndex={cityIndex} onNavigate={setCityIndex} />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 🎛️ THE VISION PRO EXPANDING DOCK (Bottom-Left) */}
         <div className="absolute bottom-6 left-6 z-[50] pointer-events-auto">
@@ -525,7 +527,17 @@ export default function Home() {
               } ${hoveredDockItem && hoveredDockItem !== 'deloitte' ? 'opacity-35' : 'opacity-100'}`}
             >
               <button 
-                onClick={() => setShowDeloittePulse(!showDeloittePulse)}
+                onClick={() => {
+                  const nextState = !showDeloittePulse;
+                  setShowDeloittePulse(nextState);
+                  if (nextState) {
+                    setShowThermalRadar(false);
+                    setShowQuietRoute(false);
+                    if (typeof setShowThermalRadar === 'function') setShowThermalRadar(false);
+                    // Nuke ANY rogue Mapbox popups currently floating on the screen
+                    document.querySelectorAll('.mapboxgl-popup').forEach(el => el.remove());
+                  }
+                }}
                 className={`flex items-center gap-3 h-12 rounded-full transition-[width,background-color,border-color] duration-500 ease-out overflow-hidden text-left group/btn shadow-lg outline-none ${
                   showDeloittePulse 
                     ? "w-48 bg-[#000000]/40 border border-[#86BC25] text-white shadow-[0_0_20px_rgba(134,188,37,0.3)]" 
