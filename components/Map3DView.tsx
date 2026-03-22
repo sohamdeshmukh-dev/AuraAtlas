@@ -19,6 +19,7 @@ import CampusLayer from "./CampusLayer";
 import EmotionWeatherOverlay from "./EmotionWeatherOverlay";
 import UserLocationLayer from "./UserLocationLayer";
 import CapitalOneOasis from "./MapLayers/CapitalOneOasis";
+import DeloittePulseLayer from "./MapLayers/DeloittePulseLayer";
 import { getResourcesByCity } from "@/lib/store";
 import { CAMPUSES } from "@/lib/campusDetection";
 import { supabase } from "@/lib/supabase";
@@ -106,6 +107,7 @@ interface Map3DViewProps {
   isSettingUp?: boolean;
   setIsSettingUp?: (active: boolean) => void;
   onNewCheckin?: () => void;
+  showDeloittePulse?: boolean;
 }
 
 // 1. Define the possible times
@@ -163,6 +165,7 @@ export default function Map3DView({
   isSettingUp = false,
   setIsSettingUp,
   onNewCheckin,
+  showDeloittePulse = false,
 }: Map3DViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -1407,6 +1410,9 @@ export default function Map3DView({
 
       {/* 🌟 CAPITAL ONE OASIS — Glassmorphic spatial markers */}
       <CapitalOneOasis map={mapInstance} />
+
+      {/* 📊 DELOITTE PULSE LAYER — 3D Stress Topography */}
+      <DeloittePulseLayer map={mapInstance} isActive={showDeloittePulse} />
 
       {/* Safe Space Modal — shown on right-click */}
       {draftSafeSpace && (

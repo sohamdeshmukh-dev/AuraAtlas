@@ -53,6 +53,7 @@ export default function Home() {
   const [showThermalRadar, setShowThermalRadar] = useState(false);
   const [showQuietRoute, setShowQuietRoute] = useState(false);
   const [showAuraPointsScanner, setShowAuraPointsScanner] = useState(false);
+  const [showDeloittePulse, setShowDeloittePulse] = useState(false);
   const [hoveredDockItem, setHoveredDockItem] = useState<string | null>(null);
 
   const didAutoCenterRef = useRef(false);
@@ -376,6 +377,7 @@ export default function Home() {
           isSettingUp={showQuietRoute}
           setIsSettingUp={setShowQuietRoute}
           onNewCheckin={handleNewCheckin}
+          showDeloittePulse={showDeloittePulse}
         />
 
         {!isNewUser && (
@@ -503,6 +505,35 @@ export default function Home() {
               } ${hoveredDockItem && hoveredDockItem !== 'aurapoints' ? 'opacity-35' : 'opacity-100'}`}
             >
               <AuraPointsButton isActive={showAuraPointsScanner} onToggle={() => setShowAuraPointsScanner(!showAuraPointsScanner)} />
+            </div>
+
+            {/* 📊 DELOITTE URBAN PULSE */}
+            <div
+              onMouseEnter={() => setHoveredDockItem('deloitte')}
+              onMouseLeave={() => setHoveredDockItem(null)}
+              className={`transition-all duration-250 ease-out origin-left ${
+                hoveredDockItem === 'deloitte' ? 'translate-x-3 drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]' : ''
+              } ${hoveredDockItem && hoveredDockItem !== 'deloitte' ? 'opacity-35' : 'opacity-100'}`}
+            >
+              <button 
+                onClick={() => setShowDeloittePulse(!showDeloittePulse)}
+                className={`flex items-center gap-3 h-12 rounded-full transition-[width,background-color,border-color] duration-500 ease-out overflow-hidden text-left group/btn shadow-lg outline-none ${
+                  showDeloittePulse 
+                    ? "w-48 bg-[#000000]/40 border border-[#86BC25] text-white shadow-[0_0_20px_rgba(134,188,37,0.3)]" 
+                    : "w-12 hover:w-48 bg-transparent border-transparent hover:bg-white/10 text-white/70 hover:text-white"
+                }`}
+              >
+                <div className={`w-12 h-12 shrink-0 flex items-center justify-center text-xl rounded-full transition-colors ${
+                  showDeloittePulse ? "bg-[#86BC25]/20 text-[#86BC25]" : "bg-white/10 group-hover/btn:bg-transparent"
+                }`}>
+                  📊
+                </div>
+                <span className={`text-[9px] font-bold tracking-widest uppercase whitespace-nowrap transition-opacity duration-300 ${
+                  showDeloittePulse ? "opacity-100 text-[#86BC25]" : "opacity-0 group-hover/btn:opacity-100 delay-100"
+                }`}>
+                  Deloitte Urban Pulse
+                </span>
+              </button>
             </div>
 
             {/* Locate Me */}
