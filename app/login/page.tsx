@@ -19,6 +19,7 @@ export default function LoginPage() {
     const [isSignUp, setIsSignUp] = useState(false);
     const [selectedCity, setSelectedCity] = useState('');
     const [selectedCollegeName, setSelectedCollegeName] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
     const router = useRouter();
 
     const supabase = useMemo(() => createBrowserClient(
@@ -49,8 +50,26 @@ export default function LoginPage() {
         return ALL_COLLEGES.filter((c) => c.city === selectedCity);
     }, [selectedCity]);
 
+    const handleDemoLogin = async () => {
+        setLoading(true);
+        setErrorMsg('');
+        try {
+            const { error } = await supabase.auth.signInWithPassword({
+                email: 'demo@auraatlas.app',
+                password: 'Demo1234!',
+            });
+            if (error) throw error;
+            router.push('/');
+        } catch (error) {
+            setErrorMsg(error instanceof Error ? error.message : 'Demo login failed');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleEmailAuth = async (e: React.FormEvent) => {
         e.preventDefault();
+        setErrorMsg('');
         setLoading(true);
         try {
             if (isSignUp) {
@@ -95,7 +114,7 @@ export default function LoginPage() {
             // onAuthStateChange will handle redirection
         } catch (error) {
             console.error(error);
-            alert(error instanceof Error ? error.message : 'An error occurred during authentication');
+            setErrorMsg(error instanceof Error ? error.message : 'An error occurred during authentication');
         } finally {
             setLoading(false);
         }
@@ -221,6 +240,12 @@ export default function LoginPage() {
                         </div>
                     )}
 
+                    {errorMsg && (
+                        <p className="rounded-lg border border-red-800 bg-red-900/20 px-3 py-2 text-sm text-red-400">
+                            {errorMsg}
+                        </p>
+                    )}
+
                     <button
                         type="submit"
                         disabled={loading}
@@ -229,6 +254,16 @@ export default function LoginPage() {
                         {loading ? (isSignUp ? 'Signing up...' : 'Signing in...') : (isSignUp ? 'Sign Up' : 'Sign In')}
                     </button>
                 </form>
+
+                <div className="mt-4 text-center">
+                    <button
+                        onClick={handleDemoLogin}
+                        disabled={loading}
+                        className="text-xs text-slate-500 hover:text-indigo-400 transition-colors disabled:opacity-50"
+                    >
+                        Demo: skip to dashboard &rarr;
+                    </button>
+                </div>
 
                 <p className="mt-4 text-center text-sm text-slate-400">
                     {isSignUp ? 'Already have an account? ' : "Don't have an account? "}
