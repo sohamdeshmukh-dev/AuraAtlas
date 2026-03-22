@@ -4,19 +4,23 @@
 export default function AuraLens({ isActive, setIsActive }: { isActive: boolean, setIsActive: (val: boolean) => void }) {
   return (
     <button 
-      onClick={() => {
-        setIsActive(!isActive);
-      }}
-      className={`flex items-center justify-between w-full px-4 py-2.5 rounded-2xl backdrop-blur-xl border transition-all duration-300 shadow-2xl group ${
+      onClick={() => setIsActive(!isActive)}
+      className={`flex items-center gap-3 h-12 rounded-full transition-[width,background-color,border-color] duration-500 ease-out overflow-hidden text-left group/btn shadow-lg ${
         isActive 
-          ? "bg-purple-500/20 border-purple-500/50 text-purple-200" 
-          : "bg-black/40 border-white/10 text-white/70 hover:text-white hover:bg-black/60 hover:border-white/30"
+          ? "w-48 bg-white/20 border border-white/40 text-white shadow-[0_0_15px_rgba(255,255,255,0.2)]" 
+          : "w-12 hover:w-48 bg-transparent border border-transparent hover:bg-white/10 text-white/70 hover:text-white"
       }`}
     >
-      <span className="text-[10px] font-bold tracking-widest uppercase mt-[1px]">
-        {isActive ? "Lens Active" : "Aura Lens"}
+      <div className={`w-12 h-12 shrink-0 flex items-center justify-center text-xl rounded-full transition-colors ${
+        isActive ? "bg-transparent" : "bg-white/10 group-hover/btn:bg-transparent"
+      }`}>
+        👁️
+      </div>
+      <span className={`text-[10px] font-bold tracking-widest uppercase whitespace-nowrap transition-opacity duration-300 ${
+        isActive ? "opacity-100" : "opacity-0 group-hover/btn:opacity-100 delay-100"
+      }`}>
+        Aura Lens
       </span>
-      <span className="text-sm">👁️</span>
     </button>
   );
 }

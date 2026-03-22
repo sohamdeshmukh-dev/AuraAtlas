@@ -56,7 +56,7 @@ export default function ThermalMoodMatrix({
 
   return (
     // 'relative' ensures the popup card anchors directly to this tiny button!
-    <div className="relative z-[50] flex flex-col items-start pointer-events-auto w-full">
+    <div className="relative z-[50] flex flex-col items-start pointer-events-auto">
       
       {/* 🧠 The AI Popup Card (Renders absolute, popping UP above the button) */}
       {isActive && (
@@ -90,21 +90,26 @@ export default function ThermalMoodMatrix({
         </div>
       )}
 
-      {/* 🎛️ The Tiny Integration Button (This sits next to your clock) */}
+      {/* 🎛️ The Dynamic Expanding Button */}
       <button 
-        onClick={handleToggle} 
-        className={`flex items-center justify-between w-full px-4 py-2.5 rounded-2xl backdrop-blur-md border transition-all duration-300 shadow-lg ${
+        onClick={handleToggle}
+        className={`flex items-center gap-3 h-12 rounded-full transition-[width,background-color,border-color] duration-500 ease-out overflow-hidden text-left group/btn shadow-lg ${
           isActive 
-            ? "bg-rose-500/20 border-rose-500/50 text-rose-200" 
-            : "bg-black/50 border-white/10 text-neutral-400 hover:bg-black/70 hover:text-white"
+            ? "w-48 bg-white/20 border border-white/40 text-white shadow-[0_0_15px_rgba(255,255,255,0.2)]" 
+            : "w-12 hover:w-48 bg-transparent border border-transparent hover:bg-white/10 text-white/70 hover:text-white"
         }`}
       >
-        <span className={`text-xs ${isActive ? "animate-pulse" : "grayscale opacity-70"}`}>🌡️</span>
-        <span className="text-[9px] font-bold tracking-widest uppercase">
-          {isActive ? "Radar On" : "Thermal"}
+        <div className={`w-12 h-12 shrink-0 flex items-center justify-center text-xl rounded-full transition-colors ${
+          isActive ? "bg-transparent" : "bg-white/10 group-hover/btn:bg-transparent"
+        }`}>
+          🌡️
+        </div>
+        <span className={`text-[10px] font-bold tracking-widest uppercase whitespace-nowrap transition-opacity duration-300 ${
+          isActive ? "opacity-100" : "opacity-0 group-hover/btn:opacity-100 delay-100"
+        }`}>
+          Thermal Radar
         </span>
       </button>
-
     </div>
   );
 }

@@ -381,56 +381,94 @@ export default function Home() {
           </button>
         )}
 
-        {/* Top Center: Location Search */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-40 text-center pointer-events-none">
-          <div className="flex flex-col items-center pointer-events-auto">
-            <CityNavigator currentIndex={cityIndex} onNavigate={setCityIndex} />
+        {/* 🏝️ THE DYNAMIC ISLAND (Top-Center) */}
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[50] pointer-events-auto animate-fade-in-down group">
+          
+          <div className="flex items-center gap-4 bg-black/30 backdrop-blur-3xl border border-white/10 px-6 py-3 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:bg-black/40 hover:border-white/20 transition-all cursor-default">
+            
+            {/* 1. Location (Now Dynamic) */}
+            <div className="flex items-center gap-2">
+              <span className="text-[13px] drop-shadow-md">📍</span>
+              <div className="flex flex-col">
+                <span className="text-[11px] font-bold text-white tracking-widest uppercase drop-shadow-sm leading-tight">
+                  {city.name}
+                </span>
+                <span className="text-[8px] font-medium text-white/40 uppercase tracking-tighter">Current Node</span>
+              </div>
+            </div>
+
+            {/* 2. Glass Separator */}
+            <div className="w-[1px] h-4 bg-white/20 rounded-full"></div>
+
+            {/* 3. The Integrated Real-Time Clock */}
+            <div className="flex items-baseline gap-1">
+              <span className="text-sm font-black text-white tracking-wider drop-shadow-md tabular-nums">
+                {currentTime.time}
+              </span>
+              <span className="text-[9px] font-bold text-white/60 uppercase">{currentTime.period}</span>
+            </div>
+
+            {/* 4. Glass Separator */}
+            <div className="w-[1px] h-4 bg-white/20 rounded-full"></div>
+
+            {/* 5. Vibe / Weather */}
+            <div className="flex items-center gap-2">
+              <span className="text-[13px] drop-shadow-md">☁️</span>
+              <span className="text-[11px] font-black text-white/90 tracking-widest">
+                65°
+              </span>
+            </div>
+
+          </div>
+          
+          {/* Subtle City Switcher Overlay (Hidden until hover) */}
+          <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
+             <CityNavigator currentIndex={cityIndex} onNavigate={setCityIndex} />
           </div>
         </div>
 
-        {/* 🕒 THE SENSORY DASHBOARD (Bottom-Left) */}
-        <div className="absolute bottom-10 left-6 z-[50] flex flex-col gap-4 pointer-events-none">
-          
-          {/* SEAMLESS CLOCK */}
-          <div className="flex items-baseline gap-1 drop-shadow-2xl">
-            <h1 className="text-5xl font-black text-white tracking-tighter drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
-              {currentTime.time}
-            </h1>
-            <span className="text-lg font-medium text-white/70 uppercase ml-1">{currentTime.period}</span>
-          </div>
-
-          {/* ✨ THE UNIFIED CONTROL GRID ✨ */}
-          <div className="pointer-events-auto flex flex-col gap-2 w-72">
+        {/* 🎛️ THE VISION PRO EXPANDING DOCK (Bottom-Left) */}
+        <div className="absolute bottom-6 left-6 z-[50] pointer-events-auto">
+          <div className="flex flex-col gap-2 bg-black/20 backdrop-blur-3xl border border-white/10 p-2 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.4)] w-fit group">
             
-            {/* Top 4 Tools in a perfect 2x2 Grid */}
-            <div className="grid grid-cols-2 gap-2">
-              <ThermalMoodMatrix onToggle={setShowThermalRadar} lat={city.lat} lng={city.lng} />
-              <AuraLens isActive={isARModeActive} setIsActive={setIsARModeActive} />
-              <PresageMonitor />
-              
-              {/* Locate Me Button */}
-              {userLocation.latitude !== null && (
-                <button 
-                  onClick={() => setLocateMeTrigger(n => n + 1)}
-                  className="flex items-center justify-between px-4 py-2.5 bg-black/20 backdrop-blur-2xl border border-white/10 rounded-2xl text-white/80 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] group w-full"
-                >
-                  <span className="text-[10px] font-bold tracking-widest uppercase mt-[1px]">Locate</span>
-                  <span className="text-sm group-hover:scale-110 transition-transform drop-shadow-md">📍</span>
-                </button>
-              )}
-            </div>
+            {/* The React Components */}
+            <ThermalMoodMatrix onToggle={setShowThermalRadar} lat={city.lat} lng={city.lng} />
+            <AuraLens isActive={isARModeActive} setIsActive={setIsARModeActive} />
+            <PresageMonitor />
+            
+            {/* Locate Me */}
+            {userLocation.latitude !== null && (
+              <button 
+                onClick={() => setLocateMeTrigger(n => n + 1)} 
+                className="flex items-center gap-3 h-12 w-12 hover:w-48 rounded-full transition-[width,background-color] duration-500 ease-out overflow-hidden text-left group/btn bg-transparent hover:bg-white/10 text-white/70 hover:text-white border border-transparent"
+              >
+                <div className="w-12 h-12 shrink-0 flex items-center justify-center text-xl rounded-full bg-white/10 group-hover/btn:bg-transparent transition-colors">📍</div>
+                <span className="text-[10px] font-bold tracking-widest uppercase whitespace-nowrap opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 delay-100">Locate Me</span>
+              </button>
+            )}
 
-            {/* Anon Check-In spans the full width at the bottom to anchor the grid */}
+            {/* Elegant Separator Line */}
+            <div className="w-8 h-[1px] bg-white/20 mx-auto my-1 rounded-full"></div>
+
+            {/* Anon Check-In Button */}
             <button 
-              onClick={() => setIsDroppingMode(!isDroppingMode)}
-              className={`flex items-center justify-between gap-2 px-4 py-2.5 backdrop-blur-2xl border rounded-2xl transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] group w-full ${
+              onClick={() => setIsDroppingMode(!isDroppingMode)} 
+              className={`flex items-center gap-3 h-12 rounded-full transition-[width,background-color] duration-500 ease-out overflow-hidden text-left group/btn border border-transparent ${
                 isDroppingMode 
-                  ? "bg-purple-900/40 border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)] text-white" 
-                  : "bg-black/20 border-white/10 hover:bg-white/10 hover:border-white/20 text-white/80 hover:text-white"
+                  ? "w-48 bg-white/20 border-white/40 text-white" 
+                  : "w-12 hover:w-48 bg-transparent hover:bg-white/10 text-white/70 hover:text-white"
               }`}
             >
-              <span className={`text-[10px] font-bold tracking-widest uppercase mt-[1px] ${isDroppingMode ? "text-purple-300" : ""}`}>Anon Check-In</span>
-              <span className={`text-sm group-hover:scale-110 transition-transform drop-shadow-md ${isDroppingMode ? "animate-pulse drop-shadow-[0_0_5px_rgba(168,85,247,0.8)]" : ""}`}>✈️</span>
+              <div className={`w-12 h-12 shrink-0 flex items-center justify-center text-xl rounded-full transition-colors ${
+                isDroppingMode ? "bg-transparent" : "bg-white/10 group-hover/btn:bg-transparent"
+              }`}>
+                ✈️
+              </div>
+              <span className={`text-[10px] font-bold tracking-widest uppercase whitespace-nowrap transition-opacity duration-300 ${
+                isDroppingMode ? "opacity-100" : "opacity-0 group-hover/btn:opacity-100 delay-100"
+              }`}>
+                Anon Check-In
+              </span>
             </button>
 
           </div>
