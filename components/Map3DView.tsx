@@ -105,6 +105,7 @@ interface Map3DViewProps {
   setIsDroppingMode?: (active: boolean) => void;
   isSettingUp?: boolean;
   setIsSettingUp?: (active: boolean) => void;
+  onNewCheckin?: () => void;
 }
 
 // 1. Define the possible times
@@ -161,6 +162,7 @@ export default function Map3DView({
   setIsDroppingMode,
   isSettingUp = false,
   setIsSettingUp,
+  onNewCheckin,
 }: Map3DViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -1330,7 +1332,23 @@ export default function Map3DView({
     };
   }, [isDroppingMode]);
 
+  // 📡 Realtime subscription — fire onNewCheckin when any new check-in is inserted
+  useEffect(() => {
+    const channel = supabase
+      .channel('checkins-live')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'checkins' },
+        () => {
+          onNewCheckin?.();
+        }
+      )
+      .subscribe();
 
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [onNewCheckin]);
 
   // ⛈️ Get dynamic sentiment based on current city
   const getSentimentUI = (cityName: string) => {

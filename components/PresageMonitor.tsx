@@ -32,7 +32,7 @@ export default function PresageMonitor() {
   }, [isActive]);
 
   return (
-    <div className="relative flex flex-col items-end z-[60]">
+    <div className="relative flex flex-col items-start z-[60]">
       {isActive && (
         <div className="relative w-64 h-48 bg-black rounded-2xl overflow-hidden shadow-2xl border border-emerald-500/50 animate-fade-in-up mb-3">
           <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover opacity-70 grayscale" />
@@ -67,7 +67,7 @@ export default function PresageMonitor() {
         className={`flex items-center gap-3 h-12 rounded-full transition-[width,background-color,border-color] duration-500 ease-out overflow-hidden text-left group/btn shadow-lg ${
           isActive 
             ? "w-48 bg-white/20 border border-white/40 text-white shadow-[0_0_15px_rgba(255,255,255,0.2)]" 
-            : "w-12 hover:w-48 bg-transparent border border-transparent hover:bg-white/10 text-white/70 hover:text-white"
+            : "w-12 hover:w-48 bg-transparent border border-transparent hover:bg-black text-white/70 hover:text-white"
         }`}
       >
         <div className={`w-12 h-12 shrink-0 flex items-center justify-center text-xl rounded-full transition-colors ${

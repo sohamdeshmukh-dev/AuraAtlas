@@ -9,7 +9,7 @@ import CampusDashboard from "@/components/CampusDashboard";
 import CollegePicker from "@/components/CollegePicker";
 import { useTheme } from "@/hooks/useTheme";
 import { CampusEmotionResponse, College } from "@/lib/types";
-import SmileScoreSurvey from "@/components/SmileScoreSurvey";
+
 import StripeCheckout from "@/components/StripeCheckout";
 import { AVATARS } from "@/lib/avatars";
 import { emergencyContactSchema, profileUpdateSchema } from "@/lib/profileValidation";
@@ -697,15 +697,6 @@ export default function ProfilePage() {
                             Save Details
                         </button>
                     </div>
-                </div>
-
-                <div className="mt-6 mb-6">
-                    <SmileScoreSurvey 
-                        userId={profile?.id || ""} 
-                        userEmail={userEmail} 
-                        isCapOneLinked={isCapOneLinked}
-                        setCapOneMiles={setCapOneMiles}
-                    />
                 </div>
 
                 <div className="space-y-8 mt-12">
