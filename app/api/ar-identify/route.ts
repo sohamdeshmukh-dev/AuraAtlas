@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { UVA_BUILDINGS } from "@/lib/uvaBuildings";
 import { haversineDistance } from "@/lib/arGeo";
+import { buildVisualPromptForBuildings } from "@/lib/buildingVisualData";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -20,12 +21,14 @@ export async function POST(req: Request) {
     let locationCtx =
       "The user is somewhere on or near the University of Virginia campus in Charlottesville, VA.";
     let nearbyHint = "";
+    let visualRefData = "";
 
     if (latitude && longitude) {
       locationCtx = `The user is at GPS (${latitude.toFixed(5)}, ${longitude.toFixed(5)}), on the University of Virginia campus.`;
 
       // Sort buildings by distance and tell GPT the closest ones
       const ranked = UVA_BUILDINGS.map((b) => ({
+        id: b.id,
         name: b.name,
         dist: haversineDistance(latitude, longitude, b.latitude, b.longitude),
       }))
@@ -35,6 +38,15 @@ export async function POST(req: Request) {
       nearbyHint = `\n\nBased on GPS, the closest buildings (in order) are:\n${ranked
         .map((r, i) => `${i + 1}. ${r.name} — ${Math.round(r.dist)}m away`)
         .join("\n")}\n\nUse this proximity data to help narrow your identification. The building they are looking at is very likely one of the top entries.`;
+
+      // Inject detailed visual reference data for nearby buildings that have it
+      const nearbyIds = ranked.map((r) => r.id);
+      visualRefData = buildVisualPromptForBuildings(nearbyIds);
+    } else {
+      // No GPS — still inject all available visual data
+      visualRefData = buildVisualPromptForBuildings(
+        UVA_BUILDINGS.map((b) => b.id)
+      );
     }
 
     // Full known building list
@@ -54,11 +66,13 @@ Given a photo taken by the user, identify which UVA building or landmark they ar
 
 Known UVA buildings in our database: ${allBuildingNames}.
 Other UVA landmarks you may recognize: Bryan Hall, Cocke Hall, Garrett Hall, Gilmer Hall, Chemistry Building, Brown College, Hereford College, Runk Dining, Aquatic & Fitness Center, University Chapel, Amphitheater, McIntire School, Darden School, John Paul Jones Arena, Bavaro Hall, Campbell Hall.
+${visualRefData}
 
 CRITICAL RULES:
 1. If the GPS data shows a building is very close (< 100m), heavily weight that in your identification.
-2. Look for architectural features: columned facades → Rotunda or Old Cabell. Red brick Georgian → Lawn pavilions. Modern glass → Rice/Olsson. 
-3. If you truly cannot identify the building, return "Unknown" — do not guess randomly.
+2. If DETAILED VISUAL REFERENCE DATA is provided above, compare the photo's features against those descriptions — signage text, column style, materials, window patterns, and distinguishing traits. A match on inscribed building name text is virtually definitive.
+3. Look for architectural features: columned portico with "OLSSON HALL" inscription → Olsson Hall. Columned facades with "THE ROTUNDA" or dome → Rotunda. Red brick Georgian → Lawn pavilions. Modern glass/metal → Rice Hall.
+4. If you truly cannot identify the building, return "Unknown" — do not guess randomly.
 
 Respond ONLY in JSON:
 {

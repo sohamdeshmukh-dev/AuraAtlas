@@ -24,6 +24,8 @@ export interface UVABuilding {
   description: string;
   emoji_vibe: string[];
   category: "academic" | "social" | "athletic" | "historic" | "library" | "health";
+  /** Short visual identifier for quick reference (populated for "trained" buildings) */
+  visual_features?: string;
 }
 
 export const UVA_BUILDINGS: UVABuilding[] = [
@@ -152,6 +154,7 @@ export const UVA_BUILDINGS: UVABuilding[] = [
     description: "CS and ECE labs — collaborative energy under tight deadlines.",
     emoji_vibe: ["🖥️", "⚡", "🤖"],
     category: "academic",
+    visual_features: "Red brick Georgian Revival, white-columned portico with 'OLSSON HALL' inscription, triangular pediment, granite steps with iron railings, two distinct entrances",
   },
 
   // ════════════════════════════════════════
