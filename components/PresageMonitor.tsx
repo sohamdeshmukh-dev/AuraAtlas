@@ -32,7 +32,7 @@ export default function PresageMonitor() {
   }, [isActive]);
 
   return (
-    <div className="relative flex flex-col items-end z-[60]">
+    <div className="relative flex flex-col items-start z-[60]">
       {isActive && (
         <div className="relative w-64 h-48 bg-black rounded-2xl overflow-hidden shadow-2xl border border-emerald-500/50 animate-fade-in-up mb-3">
           <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover opacity-70 grayscale" />

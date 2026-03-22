@@ -53,6 +53,7 @@ export default function Home() {
   const [showThermalRadar, setShowThermalRadar] = useState(false);
   const [showQuietRoute, setShowQuietRoute] = useState(false);
   const [showAuraPointsScanner, setShowAuraPointsScanner] = useState(false);
+  const [hoveredDockItem, setHoveredDockItem] = useState<string | null>(null);
 
   const didAutoCenterRef = useRef(false);
   const city = CITIES[cityIndex];
@@ -378,7 +379,7 @@ export default function Home() {
         {needsCheckIn && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="absolute top-6 right-28 bg-neutral-900 border border-white/15 p-3 rounded-full hover:bg-neutral-800 transition-colors z-[60] pointer-events-auto"
+            className="absolute top-6 right-28 bg-neutral-900 border border-white/15 p-3 rounded-full hover:bg-black hover:translate-x-3 transition-all duration-250 ease-out z-[60] pointer-events-auto"
           >
             <span className="absolute -top-1 -right-1 flex h-4 w-4">
               <span className="relative inline-flex rounded-full h-4 w-4 bg-rose-500 text-[10px] text-white font-bold items-center justify-center">!</span>
@@ -435,48 +436,96 @@ export default function Home() {
 
         {/* 🎛️ THE VISION PRO EXPANDING DOCK (Bottom-Left) */}
         <div className="absolute bottom-6 left-6 z-[50] pointer-events-auto">
-          <div className="flex flex-col gap-2 bg-black/20 backdrop-blur-3xl border border-white/10 p-2 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.4)] w-fit group">
-            
+          <div className="flex flex-col gap-2 bg-neutral-900/90 backdrop-blur-3xl border border-white/10 p-2 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.6)] w-16 overflow-visible">
+
             {/* The React Components */}
-            <ThermalMoodMatrix onToggle={setShowThermalRadar} lat={city.lat} lng={city.lng} />
-            <AuraLens isActive={isARModeActive} setIsActive={setIsARModeActive} />
-            <PresageMonitor />
-            <AuraPointsButton isActive={showAuraPointsScanner} onToggle={() => setShowAuraPointsScanner(!showAuraPointsScanner)} />
+            <div
+              onMouseEnter={() => setHoveredDockItem('thermal')}
+              onMouseLeave={() => setHoveredDockItem(null)}
+              className={`transition-all duration-250 ease-out origin-left ${
+                hoveredDockItem === 'thermal' ? 'translate-x-3 drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]' : ''
+              } ${hoveredDockItem && hoveredDockItem !== 'thermal' ? 'opacity-35' : 'opacity-100'}`}
+            >
+              <ThermalMoodMatrix onToggle={setShowThermalRadar} lat={city.lat} lng={city.lng} />
+            </div>
+            <div
+              onMouseEnter={() => setHoveredDockItem('lens')}
+              onMouseLeave={() => setHoveredDockItem(null)}
+              className={`transition-all duration-250 ease-out origin-left ${
+                hoveredDockItem === 'lens' ? 'translate-x-3 drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]' : ''
+              } ${hoveredDockItem && hoveredDockItem !== 'lens' ? 'opacity-35' : 'opacity-100'}`}
+            >
+              <AuraLens isActive={isARModeActive} setIsActive={setIsARModeActive} />
+            </div>
+            <div
+              onMouseEnter={() => setHoveredDockItem('presage')}
+              onMouseLeave={() => setHoveredDockItem(null)}
+              className={`transition-all duration-250 ease-out origin-left ${
+                hoveredDockItem === 'presage' ? 'translate-x-3 drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]' : ''
+              } ${hoveredDockItem && hoveredDockItem !== 'presage' ? 'opacity-35' : 'opacity-100'}`}
+            >
+              <PresageMonitor />
+            </div>
+            <div
+              onMouseEnter={() => setHoveredDockItem('aurapoints')}
+              onMouseLeave={() => setHoveredDockItem(null)}
+              className={`transition-all duration-250 ease-out origin-left ${
+                hoveredDockItem === 'aurapoints' ? 'translate-x-3 drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]' : ''
+              } ${hoveredDockItem && hoveredDockItem !== 'aurapoints' ? 'opacity-35' : 'opacity-100'}`}
+            >
+              <AuraPointsButton isActive={showAuraPointsScanner} onToggle={() => setShowAuraPointsScanner(!showAuraPointsScanner)} />
+            </div>
 
             {/* Locate Me */}
             {userLocation.latitude !== null && (
-              <button 
-                onClick={() => setLocateMeTrigger(n => n + 1)} 
-                className="flex items-center gap-3 h-12 w-12 hover:w-48 rounded-full transition-[width,background-color] duration-500 ease-out overflow-hidden text-left group/btn bg-transparent hover:bg-white/10 text-white/70 hover:text-white border border-transparent"
+              <div
+                onMouseEnter={() => setHoveredDockItem('locate')}
+                onMouseLeave={() => setHoveredDockItem(null)}
+                className={`transition-all duration-250 ease-out origin-left ${
+                  hoveredDockItem === 'locate' ? 'translate-x-3 drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]' : ''
+                } ${hoveredDockItem && hoveredDockItem !== 'locate' ? 'opacity-35' : 'opacity-100'}`}
               >
-                <div className="w-12 h-12 shrink-0 flex items-center justify-center text-xl rounded-full bg-white/10 group-hover/btn:bg-transparent transition-colors">📍</div>
-                <span className="text-[10px] font-bold tracking-widest uppercase whitespace-nowrap opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 delay-100">Locate Me</span>
-              </button>
+                <button
+                  onClick={() => setLocateMeTrigger(n => n + 1)}
+                  className="flex items-center gap-3 h-12 w-12 hover:w-48 rounded-full transition-[width,background-color] duration-500 ease-out overflow-hidden text-left group/btn bg-transparent hover:bg-white/10 text-white/70 hover:text-white border border-transparent"
+                >
+                  <div className="w-12 h-12 shrink-0 flex items-center justify-center text-xl rounded-full bg-white/10 group-hover/btn:bg-transparent transition-colors">📍</div>
+                  <span className="text-[10px] font-bold tracking-widest uppercase whitespace-nowrap opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 delay-100">Locate Me</span>
+                </button>
+              </div>
             )}
 
             {/* Elegant Separator Line */}
-            <div className="w-8 h-[1px] bg-white/20 mx-auto my-1 rounded-full"></div>
+            <div className={`w-8 h-[1px] bg-white/20 mx-auto my-1 rounded-full transition-opacity duration-250 ${hoveredDockItem ? 'opacity-10' : ''}`}></div>
 
             {/* Anon Check-In Button */}
-            <button 
-              onClick={() => setIsDroppingMode(!isDroppingMode)} 
-              className={`flex items-center gap-3 h-12 rounded-full transition-[width,background-color] duration-500 ease-out overflow-hidden text-left group/btn border border-transparent ${
-                isDroppingMode 
-                  ? "w-48 bg-white/20 border-white/40 text-white" 
-                  : "w-12 hover:w-48 bg-transparent hover:bg-white/10 text-white/70 hover:text-white"
-              }`}
+            <div
+              onMouseEnter={() => setHoveredDockItem('checkin')}
+              onMouseLeave={() => setHoveredDockItem(null)}
+              className={`transition-all duration-250 ease-out origin-left ${
+                hoveredDockItem === 'checkin' ? 'translate-x-3 drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]' : ''
+              } ${hoveredDockItem && hoveredDockItem !== 'checkin' ? 'opacity-35' : 'opacity-100'}`}
             >
-              <div className={`w-12 h-12 shrink-0 flex items-center justify-center text-xl rounded-full transition-colors ${
-                isDroppingMode ? "bg-transparent" : "bg-white/10 group-hover/btn:bg-transparent"
-              }`}>
-                ✈️
-              </div>
-              <span className={`text-[10px] font-bold tracking-widest uppercase whitespace-nowrap transition-opacity duration-300 ${
-                isDroppingMode ? "opacity-100" : "opacity-0 group-hover/btn:opacity-100 delay-100"
-              }`}>
-                Anon Check-In
-              </span>
-            </button>
+              <button
+                onClick={() => setIsDroppingMode(!isDroppingMode)}
+                className={`flex items-center gap-3 h-12 rounded-full transition-[width,background-color] duration-500 ease-out overflow-hidden text-left group/btn border border-transparent ${
+                  isDroppingMode
+                    ? "w-48 bg-white/20 border-white/40 text-white"
+                    : "w-12 hover:w-48 bg-transparent hover:bg-white/10 text-white/70 hover:text-white"
+                }`}
+              >
+                <div className={`w-12 h-12 shrink-0 flex items-center justify-center text-xl rounded-full transition-colors ${
+                  isDroppingMode ? "bg-transparent" : "bg-white/10 group-hover/btn:bg-transparent"
+                }`}>
+                  ✈️
+                </div>
+                <span className={`text-[10px] font-bold tracking-widest uppercase whitespace-nowrap transition-opacity duration-300 ${
+                  isDroppingMode ? "opacity-100" : "opacity-0 group-hover/btn:opacity-100 delay-100"
+                }`}>
+                  Anon Check-In
+                </span>
+              </button>
+            </div>
 
           </div>
         </div>
